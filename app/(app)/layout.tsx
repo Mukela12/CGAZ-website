@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import "./globals.css";
+import { AdaptiveLayout } from "@/components/adaptive/AdaptiveLayout";
+import { ToastProvider } from "@/components/providers/ToastProvider";
+import "../globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,7 +61,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -67,7 +69,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className={`${inter.className} antialiased bg-neutral-50 text-neutral-900`}>
-        {children}
+        <ToastProvider />
+        <AdaptiveLayout>{children}</AdaptiveLayout>
       </body>
     </html>
   );
