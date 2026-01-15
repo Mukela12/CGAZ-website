@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postinstall": "npm rebuild sharp || true",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
