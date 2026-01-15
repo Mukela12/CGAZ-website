@@ -1,0 +1,112 @@
+========================================
+CGAZ WEBSITE - NETLIFY ENVIRONMENT VARIABLES
+Quick Copy-Paste Reference
+========================================
+
+Copy each KEY and VALUE separately into Netlify:
+Site Settings → Environment Variables → Add a variable
+
+========================================
+REQUIRED VARIABLES (11 total)
+========================================
+
+KEY: NEXT_PUBLIC_SITE_URL
+VALUE: https://your-site-name.netlify.app
+(Update after first deploy with actual URL)
+
+---
+
+KEY: DATABASE_URL
+VALUE: postgresql://postgres:LlvVizawjDRrfLdeRNpvwUvYabBsNIXQ@maglev.proxy.rlwy.net:24245/railway
+
+---
+
+KEY: PAYLOAD_SECRET
+VALUE: 7713f577d053e7d31f199e8fedf431f591e30fff08d01031c1e3ba84da8984f7
+
+---
+
+KEY: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+VALUE: dvj7ayoot
+
+---
+
+KEY: CLOUDINARY_API_KEY
+VALUE: 955358423342641
+
+---
+
+KEY: CLOUDINARY_API_SECRET
+VALUE: O4IXzllAJ6xO6uhuy4FE7eDkAxw
+
+---
+
+KEY: CLOUDINARY_URL
+VALUE: cloudinary://955358423342641:O4IXzllAJ6xO6uhuy4FE7eDkAxw@dvj7ayoot
+
+---
+
+KEY: RESEND_API_KEY
+VALUE: re_dQQKbmJk_BHtqSQquP6bbzmMD8qeUozUc
+
+---
+
+KEY: FROM_EMAIL
+VALUE: contact@fluxium.dev
+
+---
+
+KEY: FROM_NAME
+VALUE: Cashew Growers Association of Zambia
+
+---
+
+KEY: NODE_ENV
+VALUE: production
+
+========================================
+BUILD SETTINGS FOR NETLIFY
+========================================
+
+Build command: npm run build
+Publish directory: .next
+Node version: 18 (or higher)
+
+========================================
+PRODUCTION DATABASE STATUS
+========================================
+
+✅ Railway PostgreSQL connected
+✅ Site Metrics seeded (22,490 members)
+✅ Payment Settings seeded
+✅ Mobile Money: +260 97 7429666
+✅ Bank: Zambia National Commercial Bank
+✅ Account: 6360061500130
+
+========================================
+DEPLOYMENT STEPS
+========================================
+
+1. Push code to GitHub:
+   git add .
+   git commit -m "Production ready - Next 15.5.9"
+   git push origin main
+
+2. Go to Netlify → Add new site → Import from GitHub
+
+3. Select your repository
+
+4. Add all environment variables above
+
+5. Set build settings:
+   - Build command: npm run build
+   - Publish directory: .next
+
+6. Click Deploy
+
+7. After first deploy:
+   - Copy your Netlify URL
+   - Update NEXT_PUBLIC_SITE_URL
+   - Trigger new deploy
+
+========================================

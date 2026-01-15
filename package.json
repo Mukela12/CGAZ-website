@@ -9,7 +9,8 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "import:cloudinary": "tsx scripts/import-cloudinary-images.ts",
-    "seed:content": "tsx scripts/seed-content.ts"
+    "seed:content": "tsx scripts/seed-content.ts",
+    "seed:production": "tsx scripts/seed-production.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.71.1",
@@ -24,10 +25,10 @@
     "framer-motion": "^12.24.11",
     "graphql": "^16.12.0",
     "lucide-react": "^0.468.0",
-    "next": "^16.1.2",
+    "next": "15.5.9",
     "payload": "^3.71.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "resend": "^6.7.0",
     "sass": "^1.97.2",
     "sharp": "^0.34.5",
@@ -36,8 +37,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/react": "19.2.8",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",
     "autoprefixer": "^10.4.20",
