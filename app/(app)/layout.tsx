@@ -31,7 +31,9 @@ export const metadata: Metadata = {
     "sustainable farming",
   ],
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+    ],
     shortcut: "/favicon.ico",
     apple: "/images/logo/cashew-logo.png",
   },
