@@ -129,71 +129,87 @@ export default async function ProjectDetailPage({
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      {/* Back Button */}
-      <div className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 text-neutral-600 hover:text-cashew-green transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Projects</span>
-          </Link>
+      {/* Hero Section with Featured Image */}
+      <section className="relative min-h-[60vh] lg:min-h-[70vh] w-full flex items-end overflow-hidden">
+        {/* Background Image or Gradient Fallback */}
+        <div className="absolute inset-0 z-0">
+          {project.featuredImage ? (
+            <>
+              <OptimizedImage
+                src={
+                  typeof project.featuredImage === "object"
+                    ? project.featuredImage.cloudinaryUrl || project.featuredImage.url || ""
+                    : ""
+                }
+                alt={
+                  typeof project.featuredImage === "object"
+                    ? project.featuredImage.alt || project.title
+                    : project.title
+                }
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority
+              />
+              {/* Enhanced gradient overlay */}
+              <div className="absolute inset-0 z-10">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+              </div>
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-cashew-green via-cashew-dark-green to-earth-brown" />
+          )}
         </div>
-      </div>
 
-      {/* Featured Image */}
-      {project.featuredImage && (
-        <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full">
-          <OptimizedImage
-            src={
-              typeof project.featuredImage === "object"
-                ? project.featuredImage.cloudinaryUrl || project.featuredImage.url || ""
-                : ""
-            }
-            alt={
-              typeof project.featuredImage === "object"
-                ? project.featuredImage.alt || project.title
-                : project.title
-            }
-            fill
-            className="object-cover"
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        {/* Back Button - Positioned at top with nav spacing */}
+        <div className="absolute top-0 left-0 right-0 z-30 pt-24 lg:pt-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-4 py-2 rounded-lg border border-white/20"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Projects</span>
+            </Link>
+          </div>
         </div>
-      )}
 
-      {/* Project Header */}
-      <div className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Content at Bottom */}
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 lg:pb-20 pt-32">
+          {/* Status Badges */}
           <div className="flex items-center gap-4 mb-6">
             <span
-              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                project.status
-              )}`}
+              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
+                project.status === "active"
+                  ? "bg-cashew-green/20 text-white border border-cashew-green/30"
+                  : project.status === "planning"
+                  ? "bg-sky-blue/20 text-white border border-sky-blue/30"
+                  : "bg-white/20 text-white border border-white/30"
+              }`}
             >
               {getStatusLabel(project.status)}
             </span>
             {project.featured && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-zambia-copper/10 text-zambia-copper">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm bg-zambia-copper/20 text-white border border-zambia-copper/30">
                 Featured Project
               </span>
             )}
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-6 leading-tight">
+          {/* Title */}
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight text-shadow-hero max-w-4xl">
             {project.title}
           </h1>
 
-          <p className="text-xl text-neutral-600 mb-8 leading-relaxed max-w-4xl">
+          {/* Summary */}
+          <p className="text-lg sm:text-xl text-white/90 mb-8 leading-relaxed max-w-3xl text-shadow-sm">
             {project.summary}
           </p>
 
           {/* Quick Stats */}
-          <div className="flex flex-wrap gap-6">
-            <div className="flex items-center gap-2 text-neutral-600">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
+            <div className="flex items-center gap-2 text-white/90">
               <Calendar className="w-5 h-5 text-cashew-green" />
               <span>
                 {formatDate(project.startDate)}
@@ -201,7 +217,7 @@ export default async function ProjectDetailPage({
               </span>
             </div>
             {project.districts && project.districts.length > 0 && (
-              <div className="flex items-center gap-2 text-neutral-600">
+              <div className="flex items-center gap-2 text-white/90">
                 <MapPin className="w-5 h-5 text-cashew-green" />
                 <span>
                   {project.districts
@@ -212,14 +228,14 @@ export default async function ProjectDetailPage({
               </div>
             )}
             {project.budget && (
-              <div className="flex items-center gap-2 text-neutral-600">
+              <div className="flex items-center gap-2 text-white/90">
                 <TrendingUp className="w-5 h-5 text-cashew-green" />
                 <span>Budget: {project.budget}</span>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Project Content */}
       <div className="py-16">
