@@ -1,6 +1,7 @@
 'use client'
 
 import Link from "next/link";
+import Image from "next/image";
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { NewsletterSignup } from "./NewsletterSignup";
@@ -96,9 +97,18 @@ export function Footer({ className, variant = "default" }: FooterProps) {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <h3 className={cn(headingStyles, "text-2xl mb-2")}>
-                CGAZ
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <Image
+                  src="/images/logo/cashew-logo.png"
+                  alt="CGAZ Logo"
+                  width={48}
+                  height={48}
+                  className="rounded-lg"
+                />
+                <h3 className={cn(headingStyles, "text-2xl")}>
+                  CGAZ
+                </h3>
+              </div>
               <p className={variant === "glass" ? "text-white/80 text-sm" : "text-neutral-400 text-sm"}>
                 Cashew Growers Association of Zambia
               </p>

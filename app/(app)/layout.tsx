@@ -30,6 +30,11 @@ export const metadata: Metadata = {
     "farmers training",
     "sustainable farming",
   ],
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/images/logo/cashew-logo.png",
+  },
   authors: [{ name: "CGAZ" }],
   creator: "Fluxium Software Agency",
   publisher: "Cashew Growers Association of Zambia",

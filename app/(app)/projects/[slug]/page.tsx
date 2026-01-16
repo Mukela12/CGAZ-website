@@ -162,18 +162,14 @@ export default async function ProjectDetailPage({
           )}
         </div>
 
-        {/* Back Button - Positioned at top with nav spacing */}
-        <div className="absolute top-0 left-0 right-0 z-30 pt-24 lg:pt-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors backdrop-blur-sm bg-white/10 px-4 py-2 rounded-lg border border-white/20"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Projects</span>
-            </Link>
-          </div>
-        </div>
+        {/* Back Button - Simple arrow in corner */}
+        <Link
+          href="/projects"
+          className="absolute top-24 lg:top-28 left-4 sm:left-6 lg:left-8 z-30 flex items-center justify-center w-10 h-10 text-white/90 hover:text-white transition-all backdrop-blur-sm bg-black/20 hover:bg-black/40 rounded-full border border-white/20"
+          aria-label="Back to Projects"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
 
         {/* Content at Bottom */}
         <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16 lg:pb-20 pt-32">
