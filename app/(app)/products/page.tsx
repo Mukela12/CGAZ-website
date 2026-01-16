@@ -69,6 +69,7 @@ export default function ProductsPage() {
         subtitle="Premium cashew products from Zambia's finest farmers, meeting international quality standards."
         height="medium"
         backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379294/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg"
+        objectPosition="center 20%"
       />
 
       {/* Products Grid */}
@@ -201,24 +202,17 @@ export default function ProductsPage() {
             Contact us for pricing, samples, or to discuss your wholesale and export
             needs. We&apos;re ready to supply premium cashew products to your business.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Link href="/contact">
               <Button
                 variant="glass"
                 size="lg"
                 iconAfter={<ArrowRight className="w-5 h-5" />}
-                className="bg-white/20 hover:bg-white/30 w-full sm:w-auto"
+                className="bg-white text-cashew-green hover:bg-white/90"
               >
                 Get in Touch
               </Button>
             </Link>
-            <Button
-              variant="glass"
-              size="lg"
-              className="bg-white text-cashew-green hover:bg-white/90 w-full sm:w-auto"
-            >
-              Request a Quote
-            </Button>
           </div>
         </div>
       </section>

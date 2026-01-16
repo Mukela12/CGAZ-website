@@ -17,40 +17,40 @@ import {
 export default function MissionVisionPage() {
   const coreValues = [
     {
-      icon: Heart,
-      title: "Integrity",
-      description:
-        "We operate with honesty, transparency, and accountability in all our dealings with members and partners.",
-    },
-    {
-      icon: Lightbulb,
-      title: "Innovation",
-      description:
-        "We embrace new technologies and methods to improve farming practices and increase productivity.",
-    },
-    {
       icon: Users,
-      title: "Collaboration",
+      title: "Democratic Governance",
       description:
-        "We believe in the power of working together to achieve common goals and support each other.",
+        "We uphold democratic principles in our organizational structure, ensuring every member has a voice in decision-making processes.",
     },
     {
-      icon: TrendingUp,
-      title: "Excellence",
+      icon: Heart,
+      title: "Transparency & Accountability",
       description:
-        "We strive for the highest standards in everything we do, from training to market access.",
-    },
-    {
-      icon: Leaf,
-      title: "Sustainability",
-      description:
-        "We promote environmentally responsible farming practices that protect our land for future generations.",
+        "We operate with openness and accountability in all our dealings with members, partners, and stakeholders.",
     },
     {
       icon: Award,
+      title: "Solidarity with the Poor",
+      description:
+        "We prioritize the needs of vulnerable communities, working to uplift those most affected by poverty and environmental degradation.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Inclusiveness",
+      description:
+        "We embrace diversity and ensure equal opportunities for all, regardless of gender, age, or background.",
+    },
+    {
+      icon: Leaf,
+      title: "Partnership",
+      description:
+        "We value collaboration with government, development partners, and communities to achieve sustainable impact.",
+    },
+    {
+      icon: Lightbulb,
       title: "Empowerment",
       description:
-        "We equip farmers with knowledge, skills, and resources to take control of their livelihoods.",
+        "We equip farmers with knowledge, skills, and resources to take control of their livelihoods and build resilience.",
     },
   ];
 
@@ -102,10 +102,9 @@ export default function MissionVisionPage() {
               </div>
               <div className="bg-neutral-50 p-8 rounded-2xl border-l-4 border-cashew-green">
                 <p className="text-xl text-neutral-700 leading-relaxed font-medium">
-                  To empower Zambian cashew farmers through sustainable
-                  agricultural practices, comprehensive training, market access,
-                  and community support, improving livelihoods and contributing
-                  to national food security and economic development.
+                  To empower our members to grow with and benefit from the
+                  cashew industry through sustainable agricultural practices,
+                  comprehensive training, market access, and community support.
                 </p>
               </div>
             </div>
@@ -134,10 +133,9 @@ export default function MissionVisionPage() {
               </div>
               <div className="bg-neutral-50 p-8 rounded-2xl border-l-4 border-sky-blue">
                 <p className="text-xl text-neutral-700 leading-relaxed font-medium">
-                  To be the leading agricultural cooperative in Zambia,
-                  recognized for transforming the cashew industry, creating
-                  prosperity for farming communities, and establishing Zambia as
-                  a premier cashew producer in the region.
+                  A strong cashew industry in Zambia, where Zambians equitably
+                  benefit in all stages of the cashew value chain—from production
+                  and processing to marketing and export.
                 </p>
               </div>
             </div>

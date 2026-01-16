@@ -76,6 +76,7 @@ export const CourseRegistrations: CollectionConfig = {
       required: true,
       label: 'Course/Training Program',
       options: [
+        { label: 'CGAZ Annual Membership (ZMW 70)', value: 'membership' },
         { label: 'Foundation Course - Cashew Cultivation Basics', value: 'foundation' },
         { label: 'Integrated Pest Management', value: 'pest-management' },
         { label: 'Pruning & Tree Management', value: 'pruning' },
@@ -200,9 +201,4 @@ export const CourseRegistrations: CollectionConfig = {
   ],
 
   timestamps: true,
-
-  upload: {
-    staticDir: 'public/receipts',
-    mimeTypes: ['image/*', 'application/pdf'],
-  },
 }

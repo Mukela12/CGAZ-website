@@ -198,31 +198,62 @@ export const Resources: CollectionConfig = {
       async ({ doc, req, operation }) => {
         // Upload to Cloudinary on create
         if (operation === 'create' && doc.filename) {
-          try {
-            const filePath = path.join(process.cwd(), 'public/resources', doc.filename)
+          const filePath = path.join(process.cwd(), 'public/resources', doc.filename)
+          let uploadResult = null
+          let lastError = null
 
-            // Upload to Cloudinary in CGAZ-RESOURCES folder
-            const cloudinary = getCloudinary()
-            const result = await cloudinary.uploader.upload(filePath, {
-              folder: 'CGAZ-RESOURCES',
-              public_id: path.parse(doc.filename).name,
-              resource_type: 'auto', // Auto-detect resource type
-              overwrite: false,
-            })
+          // Retry logic: 3 attempts with 1 second delay between retries
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+              const cloudinary = getCloudinary()
+              uploadResult = await cloudinary.uploader.upload(filePath, {
+                folder: 'CGAZ-RESOURCES',
+                public_id: path.parse(doc.filename).name,
+                resource_type: 'auto', // Auto-detect resource type
+                overwrite: false,
+              })
+              console.log(`✓ Resource uploaded to Cloudinary: ${uploadResult.public_id}`)
+              break // Success, exit retry loop
+            } catch (error) {
+              lastError = error
+              console.error(`✗ Cloudinary upload attempt ${attempt}/3 failed:`, error)
+              if (attempt < 3) {
+                // Wait 1 second before retrying
+                await new Promise(resolve => setTimeout(resolve, 1000))
+              }
+            }
+          }
 
+          if (uploadResult) {
             // Update document with Cloudinary URL
-            await req.payload.update({
-              collection: 'resources',
-              id: doc.id,
-              data: {
-                cloudinaryUrl: result.secure_url,
-                cloudinaryPublicId: result.public_id,
-              },
-            })
-          } catch (error) {
-            console.error('Error uploading resource to Cloudinary:', error)
+            try {
+              await req.payload.update({
+                collection: 'resources',
+                id: doc.id,
+                data: {
+                  cloudinaryUrl: uploadResult.secure_url,
+                  cloudinaryPublicId: uploadResult.public_id,
+                },
+              })
+            } catch (updateError) {
+              console.error('Failed to update resource with Cloudinary URL:', updateError)
+            }
+          } else {
+            // All retries failed - delete the record to prevent orphaned entries
+            console.error(`✗ All Cloudinary upload attempts failed for resource ${doc.id}`)
+            try {
+              await req.payload.delete({
+                collection: 'resources',
+                id: doc.id,
+              })
+              console.log(`✗ Deleted resource record ${doc.id} due to Cloudinary upload failure`)
+            } catch (deleteError) {
+              console.error('Failed to cleanup resource record:', deleteError)
+            }
+            throw new Error(`Failed to upload resource to Cloudinary after 3 attempts: ${lastError?.message || 'Unknown error'}`)
           }
         }
+        return doc
       },
     ],
     afterDelete: [

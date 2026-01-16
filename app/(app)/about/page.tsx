@@ -51,6 +51,8 @@ export default function AboutPage() {
       <Hero
         title="About CGAZ"
         subtitle="Building a stronger cashew farming community across Zambia through collaboration, innovation, and dedication."
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg"
+        objectPosition="center 40%"
         height="medium"
       />
 

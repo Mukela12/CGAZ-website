@@ -47,7 +47,7 @@ export function GlassCard({
   };
 
   const hoverStyles = hoverable
-    ? "hover:bg-white/15 hover:shadow-glass-lg hover:-translate-y-1 cursor-pointer"
+    ? "hover:bg-white/15 hover:shadow-glass-lg hover:-translate-y-2 hover:scale-[1.02] cursor-pointer"
     : "";
 
   return (

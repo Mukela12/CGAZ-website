@@ -19,8 +19,14 @@
     @apply border-neutral-200;
   }
 
+  html {
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-neutral-50 text-neutral-900 font-sans;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
   }
 
   h1,
@@ -30,6 +36,17 @@
   h5,
   h6 {
     @apply font-semibold leading-tight;
+    text-wrap: balance;
+  }
+
+  /* Smooth transitions for all interactive elements */
+  a, button {
+    @apply transition-all duration-300;
+  }
+
+  /* Better focus states */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-cashew-green;
   }
 }
 
@@ -50,8 +67,22 @@
     @apply backdrop-blur-lg bg-white/5 border-b border-white/10;
   }
 
+  .glass-nav-scrolled {
+    @apply backdrop-blur-md bg-white/85 border-b border-neutral-200/50 shadow-nav;
+  }
+
+  .glass-nav-transparent {
+    @apply bg-transparent border-b border-transparent;
+  }
+
   .glass-overlay {
     @apply backdrop-blur-xl bg-gradient-to-br from-white/20 to-transparent;
+  }
+
+  /* Glassmorphic Dropdown Menu */
+  .glass-dropdown {
+    @apply backdrop-blur-lg bg-white/95 border border-neutral-200/50;
+    @apply rounded-xl shadow-nav-lg;
   }
 
   /* Button Styles */
@@ -75,6 +106,54 @@
 }
 
 @layer utilities {
+  /* Text Shadows for Hero Typography */
+  .text-shadow-sm {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-hero {
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  .text-shadow-none {
+    text-shadow: none;
+  }
+
+  /* Hero Typography */
+  .hero-title {
+    @apply font-display font-bold leading-[1.05] tracking-tight;
+    @apply text-5xl sm:text-6xl lg:text-7xl;
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-subtitle {
+    @apply font-sans font-normal leading-relaxed;
+    @apply text-lg sm:text-xl lg:text-2xl;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Hero Gradient Overlays */
+  .hero-gradient {
+    @apply bg-gradient-to-t from-black/80 via-black/40 to-black/10;
+  }
+
+  .hero-gradient-strong {
+    @apply bg-gradient-to-t from-black/90 via-black/50 to-black/20;
+  }
+
   /* Text gradients */
   .text-gradient-green {
     @apply bg-gradient-to-r from-cashew-green to-cashew-dark-green bg-clip-text text-transparent;
@@ -96,6 +175,53 @@
 
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
+  }
+
+  /* Staggered animation delays for lists */
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+  .stagger-6 { animation-delay: 0.3s; }
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

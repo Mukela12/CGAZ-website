@@ -135,8 +135,11 @@ export const Projects: CollectionConfig = {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
       label: 'Featured Image',
+      admin: {
+        description: 'Upload a featured image for this project (recommended)',
+      },
     },
     {
       name: 'gallery',

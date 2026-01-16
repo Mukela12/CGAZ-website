@@ -54,7 +54,8 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
         title="Farmer Resources"
         subtitle="Access training materials, technical guides, and resources."
         height="medium"
-        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379295/Cashew-Nursery11_ujzxc6.jpg"
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379294/CashewGrowersAssociationOfZambiaNurseryAtSimulumbeResearchStationInMongu15_soa5ks.jpg"
+        objectPosition="center 40%"
       />
       <ResourcesFilter categories={categories} selectedCategory={selectedCategory} searchQuery={searchQuery} />
       <section className="py-16 bg-white">
@@ -67,9 +68,15 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
                 <GlassCard key={resource.id} className="p-6">
                   {getFileIcon(resource.fileType)}
                   <h3 className="font-bold mt-4">{resource.title}</h3>
-                  <a href={resource.cloudinaryUrl} download className="mt-4 inline-flex items-center gap-2 text-cashew-green">
-                    <Download className="w-4 h-4" />Download
-                  </a>
+                  {resource.cloudinaryUrl ? (
+                    <a href={resource.cloudinaryUrl} download className="mt-4 inline-flex items-center gap-2 text-cashew-green hover:text-cashew-dark-green transition-colors">
+                      <Download className="w-4 h-4" />Download
+                    </a>
+                  ) : (
+                    <span className="mt-4 inline-flex items-center gap-2 text-neutral-400 text-sm">
+                      <FileText className="w-4 h-4" />Coming Soon
+                    </span>
+                  )}
                 </GlassCard>
               ))}
             </div>

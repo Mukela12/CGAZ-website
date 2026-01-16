@@ -137,6 +137,8 @@ export default function FarmersPage() {
       <Hero
         title="Resources for Farmers"
         subtitle="Empowering cashew farmers with training, resources, and community support to build thriving, sustainable farms."
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg"
+        objectPosition="center 30%"
         height="large"
         primaryCta={{
           label: "Join CGAZ Today",

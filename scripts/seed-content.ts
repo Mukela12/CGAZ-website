@@ -312,94 +312,332 @@ async function seedContent() {
     console.log(`\n✅ Created ${teamMembers.length} team members`)
 
     // ============================================================
-    // STEP 4: Create Nalolo Women & Youth Empowerment Project
+    // STEP 4: Create All CGAZ Projects (7 Total from Documents)
     // ============================================================
-    console.log('\n🌳 Step 4: Creating Nalolo Women & Youth Empowerment Project...')
+    console.log('\n🌳 Step 4: Creating CGAZ Projects from official documents...')
 
-    try {
-      const naloloProject = await payload.create({
-        collection: 'projects',
-        data: {
-          title: 'Nalolo Women and Youth Cashew Development and Climate Resilience Project',
-          slug: 'nalolo-women-youth-empowerment',
-          summary: 'Empowering 7,000 beneficiaries (3,500 women and 3,500 youths) to grow 700,000 cashew trees integrated with agroforestry systems in Western Province, contributing to economic growth, food security, and climate resilience.',
-          description: `
-            <h2>Project Overview</h2>
-            <p>The Nalolo Women and Youth Cashew Development and Climate Resilience Project is CGAZ's flagship initiative aimed at transforming livelihoods and restoring degraded landscapes in Western Province through sustainable cashew production.</p>
+    // Helper function to create simple rich text format for Payload
+    const createRichText = (htmlContent: string) => {
+      // Convert simple HTML paragraphs to Payload's Slate format
+      const paragraphs = htmlContent
+        .split(/<\/?(?:p|h[1-6]|ul|li)>/g)
+        .map(text => text.trim())
+        .filter(text => text.length > 0 && !text.startsWith('<'))
 
-            <h3>Project Goal</h3>
-            <p>To contribute to Zambia's economic growth and food security by supporting 3,500 women and 3,500 youths with resources to grow 700,000 cashew trees integrated with agroforestry systems.</p>
-
-            <h3>Project Districts</h3>
-            <p>The project is implemented in Kalabo, Mongu, and Limulunga Districts in Western Province, targeting communities living on heavily degraded Kalahari sand soils.</p>
-
-            <h3>Key Components</h3>
-            <ul>
-              <li><strong>Cashew Seedling Production:</strong> Establishing nurseries to produce 700,000 high-quality cashew seedlings</li>
-              <li><strong>Farmer Training:</strong> Comprehensive training in cashew production, grafting techniques, and orchard management</li>
-              <li><strong>Land Security:</strong> Supporting beneficiaries to secure land tenure for sustainable cashew orchards</li>
-              <li><strong>Climate Adaptation:</strong> Integrating cashew with agroforestry systems to rehabilitate degraded land</li>
-              <li><strong>Women & Youth Empowerment:</strong> Prioritizing women and youth as primary beneficiaries and leaders</li>
-              <li><strong>Market Linkages:</strong> Connecting farmers to processors and markets for cashew products</li>
-            </ul>
-
-            <h3>Environmental Benefits</h3>
-            <p>The evergreen cashew trees play an important role in rehabilitating heavily degraded pieces of land while providing a sustainable and alternative source of livelihood. Cashew trees thrive on infertile Kalahari sands and contribute to:</p>
-            <ul>
-              <li>Soil restoration and erosion control</li>
-              <li>Carbon sequestration and climate change mitigation</li>
-              <li>Biodiversity conservation</li>
-              <li>Watershed protection</li>
-            </ul>
-
-            <h3>Expected Outcomes</h3>
-            <ul>
-              <li>7,000 beneficiaries (3,500 women + 3,500 youths) empowered</li>
-              <li>700,000 cashew trees planted across 3 districts</li>
-              <li>Improved household incomes and food security</li>
-              <li>Restored degraded landscapes and improved ecosystem services</li>
-              <li>Strengthened climate resilience in vulnerable communities</li>
-              <li>Enhanced democratic governance and gender equality at grassroots level</li>
-            </ul>
-
-            <h3>Funding Partners</h3>
-            <p>This project is made possible through financial support from:</p>
-            <ul>
-              <li>GIZ (German Agency for International Cooperation)</li>
-              <li>European Union (EU)</li>
-              <li>Organisation of African, Caribbean and Pacific States (OACPS)</li>
-            </ul>
-          `,
-          status: 'active',
-          startDate: '2024-10-01',
-          endDate: '2026-10-31',
-          districts: ['Kalabo', 'Mongu', 'Limulunga'],
-          budget: 'USD 2.5 Million',
-          objectives: [
-            'Empower 3,500 women and 3,500 youths to establish sustainable cashew orchards',
-            'Plant 700,000 cashew trees integrated with agroforestry systems',
-            'Rehabilitate degraded Kalahari sand landscapes in Western Province',
-            'Enhance climate resilience of vulnerable communities',
-            'Improve household incomes through cashew value chain development',
-            'Promote gender equality and youth participation in agricultural development',
-            'Strengthen democratic governance and community-led development',
-          ],
-          impactMetrics: {
-            beneficiaries: 7000,
-            womenEmpowered: 3500,
-            youthInvolved: 3500,
-            treesPlanted: 700000,
-            hectaresCovered: 7000,
-            jobsCreated: 7000,
-          },
-          featured: true,
+      return {
+        root: {
+          type: 'root',
+          children: paragraphs.map(text => ({
+            type: 'paragraph',
+            children: [{ type: 'text', text }],
+            version: 1,
+          })),
+          direction: 'ltr',
+          format: '',
+          indent: 0,
+          version: 1,
         },
-      })
-
-      console.log(`  ✅ Created project: ${naloloProject.title}`)
-    } catch (error: any) {
-      console.log(`  ⚠️  Project may already exist: ${error.message}`)
+      }
     }
+
+    const projects = [
+      {
+        title: 'Mongu Cashew Development and Environmental Protection Project',
+        slug: 'mongu-cashew-development-2009',
+        summary: 'CGAZ\'s first project focused on cashew development and environmental protection in Mongu District, establishing the foundation for community-based cashew production in Western Province.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>The Mongu Cashew Development and Environmental Protection Project was CGAZ's inaugural initiative, launched in 2009 with support from the Ministry of Lands. This project established the foundation for community-based cashew production in Western Province.</p>
+
+          <h3>Project Goals</h3>
+          <ul>
+            <li>Introduce cashew cultivation as a sustainable livelihood option</li>
+            <li>Protect and rehabilitate degraded land through tree planting</li>
+            <li>Build capacity of smallholder farmers in cashew production</li>
+            <li>Establish initial Cashew Development Centers</li>
+          </ul>
+
+          <h3>Key Achievements</h3>
+          <p>This foundational project successfully demonstrated the viability of cashew production on the Kalahari sands and laid the groundwork for CGAZ's future growth and partnerships.</p>
+        `,
+        status: 'completed',
+        startDate: '2009-01-01',
+        endDate: '2010-12-31',
+        district: ['mongu'],
+        budget: 'Government Funded',
+        impactMetrics: {
+          beneficiaries: 500,
+        },
+        featured: false,
+      },
+      {
+        title: 'Capacity Building Project',
+        slug: 'capacity-building-2011',
+        summary: 'European Commission-funded project to strengthen CGAZ organizational capacity, farmer training systems, and extension services across Western Province.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>The Capacity Building Project, funded by the European Commission in 2011, focused on strengthening CGAZ's organizational systems and expanding farmer training programs.</p>
+
+          <h3>Key Components</h3>
+          <ul>
+            <li>Organizational development and governance strengthening</li>
+            <li>Training of trainers (ToT) programs</li>
+            <li>Development of training materials and curricula</li>
+            <li>Establishment of extension services network</li>
+          </ul>
+
+          <h3>Outcomes</h3>
+          <p>This project significantly enhanced CGAZ's capacity to deliver services to members and established systems that continue to support the organization today.</p>
+        `,
+        status: 'completed',
+        startDate: '2011-01-01',
+        endDate: '2012-12-31',
+        district: ['mongu', 'senanga', 'kalabo'],
+        budget: 'EU Funded',
+        impactMetrics: {
+          beneficiaries: 1000,
+        },
+        featured: false,
+      },
+      {
+        title: 'Climate Risk Adaptation Facilitator - PPCR II',
+        slug: 'ppcr-climate-adaptation-2015',
+        summary: 'World Bank-funded Pilot Project for Climate Resilience (PPCR II) where CGAZ served as Climate Risk Adaptation Facilitator, developing 250 Community Adaptation Projects across Western Province.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>From 2015 to 2020, CGAZ served as the Climate Risk Adaptation Facilitator under the World Bank's Pilot Project for Climate Resilience Phase II (PPCR II). This strategic role positioned CGAZ at the forefront of climate adaptation efforts in Western Province.</p>
+
+          <h3>Project Scope</h3>
+          <p>The project focused on enhancing the adaptive capacity of vulnerable communities to climate change through sustainable land management and livelihood diversification.</p>
+
+          <h3>Key Achievements</h3>
+          <ul>
+            <li>Developed and implemented 250 Community Adaptation Projects</li>
+            <li>Trained communities in climate-smart agricultural practices</li>
+            <li>Promoted cashew agroforestry as a climate adaptation strategy</li>
+            <li>Built institutional capacity for climate risk management</li>
+            <li>Established community-based natural resource management systems</li>
+          </ul>
+
+          <h3>Impact</h3>
+          <p>This project established CGAZ as a recognized leader in climate adaptation and sustainable development in Zambia, creating models that have been replicated in subsequent projects.</p>
+        `,
+        status: 'completed',
+        startDate: '2015-01-01',
+        endDate: '2020-12-31',
+        district: ['mongu', 'senanga', 'kalabo', 'limulunga', 'sikongo', 'shangombo'],
+        budget: 'World Bank Funded',
+        impactMetrics: {
+          beneficiaries: 5000,
+        },
+        featured: false,
+      },
+      {
+        title: 'Cashew Infrastructure Development Project (CIDP)',
+        slug: 'cidp-infrastructure-2017',
+        summary: 'African Development Bank-funded project that mobilized over 22,000 farmers, established warehouse receipt systems, and developed critical cashew value chain infrastructure across Western Province.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>The Cashew Infrastructure Development Project (CIDP), funded by the African Development Bank from 2017 to 2023, was a transformative initiative that significantly expanded CGAZ's reach and impact.</p>
+
+          <h3>Project Goals</h3>
+          <ul>
+            <li>Mobilize farmers into organized Cashew Development Centers</li>
+            <li>Establish warehouse receipt systems for cashew marketing</li>
+            <li>Develop value chain infrastructure (nurseries, processing, storage)</li>
+            <li>Build market linkages for Zambian cashew products</li>
+            <li>Strengthen farmer organization and governance</li>
+          </ul>
+
+          <h3>Key Achievements</h3>
+          <ul>
+            <li>Mobilized over 22,000 farmers across Western Province</li>
+            <li>Established 145 Cashew Development Centers</li>
+            <li>Developed warehouse receipt system for quality and traceability</li>
+            <li>Built processing and storage infrastructure</li>
+            <li>Created market linkages with processors and exporters</li>
+          </ul>
+
+          <h3>Legacy</h3>
+          <p>The CIDP laid the foundation for CGAZ's current membership base and organizational structure, establishing the infrastructure that continues to serve farmers today.</p>
+        `,
+        status: 'completed',
+        startDate: '2017-01-01',
+        endDate: '2023-12-31',
+        district: ['mongu', 'senanga', 'kalabo', 'limulunga', 'sikongo', 'shangombo', 'lukulu', 'mitete', 'sioma', 'nalolo'],
+        budget: 'AfDB Funded',
+        impactMetrics: {
+          beneficiaries: 22000,
+          treesPlanted: 500000,
+        },
+        featured: true,
+      },
+      {
+        title: 'Empowering Women and Youth Through Cashew Production',
+        slug: 'women-youth-empowerment-2018',
+        summary: 'EU-funded project through People in Need that empowered over 500 women and youth beneficiaries in Mongu, Limulunga, and Kalabo districts through cashew production and value addition.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>From 2018 to 2021, CGAZ implemented the Empowering Women and Youth Through Cashew Production project with funding from the European Union through People in Need (Czech Republic).</p>
+
+          <h3>Target Groups</h3>
+          <p>The project specifically targeted women and youth who face barriers to economic participation, providing them with resources and training to establish sustainable livelihoods through cashew production.</p>
+
+          <h3>Key Components</h3>
+          <ul>
+            <li>Training in cashew production and orchard management</li>
+            <li>Distribution of seedlings and establishment support</li>
+            <li>Value addition and processing training</li>
+            <li>Business skills and entrepreneurship development</li>
+            <li>Market linkages and cooperative formation</li>
+          </ul>
+
+          <h3>Impact</h3>
+          <p>Over 500 women and youth beneficiaries established productive cashew orchards and developed entrepreneurial skills, creating sustainable income sources for their households.</p>
+        `,
+        status: 'completed',
+        startDate: '2018-01-01',
+        endDate: '2021-12-31',
+        district: ['mongu', 'limulunga', 'kalabo'],
+        budget: 'EU/People in Need Funded',
+        impactMetrics: {
+          beneficiaries: 500,
+          women: 300,
+          youth: 200,
+        },
+        featured: false,
+      },
+      {
+        title: 'Expanding Water & Sanitation Project',
+        slug: 'wash-expansion-2023',
+        summary: 'SNV Netherlands-supported project expanding water and sanitation services in Nalolo district while integrating cashew production for sustainable livelihoods.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>In collaboration with SNV Netherlands Development Organisation, CGAZ participated in the Expanding Water & Sanitation project from 2023 to 2024 in Nalolo district.</p>
+
+          <h3>Integrated Approach</h3>
+          <p>This project demonstrated CGAZ's capacity to integrate cashew development with broader rural development initiatives, combining WASH services with livelihood support.</p>
+
+          <h3>Key Components</h3>
+          <ul>
+            <li>Water and sanitation infrastructure development</li>
+            <li>Community health and hygiene promotion</li>
+            <li>Integration of cashew production for income generation</li>
+            <li>Capacity building for sustainable service management</li>
+          </ul>
+
+          <h3>Outcomes</h3>
+          <p>The project improved access to clean water and sanitation while establishing cashew orchards as a sustainable income source for communities in Nalolo district.</p>
+        `,
+        status: 'completed',
+        startDate: '2023-01-01',
+        endDate: '2024-06-30',
+        district: ['nalolo'],
+        budget: 'SNV Netherlands Funded',
+        impactMetrics: {
+          beneficiaries: 2000,
+        },
+        featured: false,
+      },
+      {
+        title: 'Nalolo Women and Youth Cashew Development and Climate Resilience Project',
+        slug: 'nalolo-women-youth-empowerment',
+        summary: 'Empowering 7,000 beneficiaries (3,500 women and 3,500 youths) to grow 700,000 cashew trees integrated with agroforestry systems in Western Province, contributing to economic growth, food security, and climate resilience.',
+        description: `
+          <h2>Project Overview</h2>
+          <p>The Nalolo Women and Youth Cashew Development and Climate Resilience Project is CGAZ's flagship initiative aimed at transforming livelihoods and restoring degraded landscapes in Western Province through sustainable cashew production.</p>
+
+          <h3>Project Goal</h3>
+          <p>To contribute to Zambia's economic growth and food security by supporting 3,500 women and 3,500 youths with resources to grow 700,000 cashew trees integrated with agroforestry systems.</p>
+
+          <h3>Project Districts</h3>
+          <p>The project is implemented in Kalabo, Mongu, and Limulunga Districts in Western Province, targeting communities living on heavily degraded Kalahari sand soils.</p>
+
+          <h3>Key Components</h3>
+          <ul>
+            <li><strong>Cashew Seedling Production:</strong> Establishing nurseries to produce 700,000 high-quality cashew seedlings</li>
+            <li><strong>Farmer Training:</strong> Comprehensive training in cashew production, grafting techniques, and orchard management</li>
+            <li><strong>Land Security:</strong> Supporting beneficiaries to secure land tenure for sustainable cashew orchards</li>
+            <li><strong>Climate Adaptation:</strong> Integrating cashew with agroforestry systems to rehabilitate degraded land</li>
+            <li><strong>Women & Youth Empowerment:</strong> Prioritizing women and youth as primary beneficiaries and leaders</li>
+            <li><strong>Market Linkages:</strong> Connecting farmers to processors and markets for cashew products</li>
+          </ul>
+
+          <h3>Environmental Benefits</h3>
+          <p>The evergreen cashew trees play an important role in rehabilitating heavily degraded pieces of land while providing a sustainable and alternative source of livelihood. Cashew trees thrive on infertile Kalahari sands and contribute to:</p>
+          <ul>
+            <li>Soil restoration and erosion control</li>
+            <li>Carbon sequestration and climate change mitigation</li>
+            <li>Biodiversity conservation</li>
+            <li>Watershed protection</li>
+          </ul>
+
+          <h3>Expected Outcomes</h3>
+          <ul>
+            <li>7,000 beneficiaries (3,500 women + 3,500 youths) empowered</li>
+            <li>700,000 cashew trees planted across 3 districts</li>
+            <li>Improved household incomes and food security</li>
+            <li>Restored degraded landscapes and improved ecosystem services</li>
+            <li>Strengthened climate resilience in vulnerable communities</li>
+            <li>Enhanced democratic governance and gender equality at grassroots level</li>
+          </ul>
+
+          <h3>Funding Partners</h3>
+          <p>This project is made possible through financial support from:</p>
+          <ul>
+            <li>GIZ (German Agency for International Cooperation)</li>
+            <li>European Union (EU)</li>
+            <li>Organisation of African, Caribbean and Pacific States (OACPS)</li>
+          </ul>
+        `,
+        status: 'active',
+        startDate: '2024-10-01',
+        endDate: '2026-10-31',
+        district: ['kalabo', 'mongu', 'limulunga'],
+        budget: 'USD 2.5 Million (GIZ/EU/OACPS)',
+        impactMetrics: {
+          beneficiaries: 7000,
+          women: 3500,
+          youth: 3500,
+          treesPlanted: 700000,
+          hectares: 7000,
+          jobsCreated: 7000,
+        },
+        featured: true,
+      },
+    ]
+
+    for (const project of projects) {
+      try {
+        // Strip HTML tags for plain text description (Payload will handle rich text differently)
+        const plainDescription = project.description
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+
+        await payload.create({
+          collection: 'projects',
+          data: {
+            title: project.title,
+            slug: project.slug,
+            summary: project.summary,
+            description: createRichText(plainDescription),
+            status: project.status,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            district: project.district,
+            budget: project.budget,
+            impactMetrics: project.impactMetrics,
+            featured: project.featured,
+          },
+        })
+        console.log(`  ✅ Created project: ${project.title}`)
+      } catch (error: any) {
+        console.log(`  ⚠️  Project creation failed: ${project.title} - ${error.message}`)
+      }
+    }
+
+    console.log(`\n✅ Created ${projects.length} projects from official CGAZ documents`)
 
     // ============================================================
     // STEP 5: Create Initial Blog Posts
@@ -847,7 +1085,14 @@ async function seedContent() {
     console.log('\n✅ Imported Cloudinary images into Media collection')
     console.log('✅ Created 10 partner organizations')
     console.log('✅ Created 9 team members')
-    console.log('✅ Created Nalolo Women & Youth Empowerment Project')
+    console.log('✅ Created 7 projects (from official CGAZ documents)')
+    console.log('   - Mongu Cashew Development (2009)')
+    console.log('   - Capacity Building Project (2011)')
+    console.log('   - PPCR II Climate Adaptation (2015-2020)')
+    console.log('   - CIDP Infrastructure (2017-2023)')
+    console.log('   - Women & Youth Empowerment (2018-2021)')
+    console.log('   - WASH Expansion (2023-2024)')
+    console.log('   - Nalolo Women & Youth Project (2024-2026)')
     console.log('✅ Created 3 blog posts')
     console.log('✅ Created 1 success story')
     console.log('✅ Created 5 downloadable resource entries')
@@ -855,7 +1100,7 @@ async function seedContent() {
     console.log('   1. Login to admin panel at /admin')
     console.log('   2. Upload photos for team members')
     console.log('   3. Upload partner logos')
-    console.log('   4. Upload featured image for Nalolo project')
+    console.log('   4. Upload featured images for projects')
     console.log('   5. Upload PDF files for downloadable resources')
     console.log('   6. Review and publish additional content as needed')
     console.log('\n🚀 Your CGAZ website is now populated with real content!')

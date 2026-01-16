@@ -3,17 +3,43 @@
 import { Hero } from "@/components/shared/Hero";
 import { Footer } from "@/components/shared/Footer";
 import { GlassCard } from "@/components/shared/GlassCard";
-import { OptimizedImage } from "@/components/shared/OptimizedImage";
-import { Mail, Linkedin, Phone } from "lucide-react";
+import { Mail, Linkedin, Phone, User } from "lucide-react";
 
 interface TeamMember {
   name: string;
   role: string;
   bio: string;
-  image: string;
   email?: string;
   phone?: string;
   linkedin?: string;
+}
+
+// Helper to get initials from name
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+// Avatar placeholder component
+function AvatarPlaceholder({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) {
+  const initials = getInitials(name);
+  const sizeClasses = {
+    sm: "w-20 h-20 text-xl",
+    md: "w-32 h-32 text-3xl",
+    lg: "w-40 h-40 text-4xl",
+  };
+
+  return (
+    <div
+      className={`${sizeClasses[size]} rounded-full bg-gradient-to-br from-cashew-green to-cashew-dark-green flex items-center justify-center text-white font-bold`}
+    >
+      {initials}
+    </div>
+  );
 }
 
 export default function LeadershipPage() {
@@ -22,7 +48,6 @@ export default function LeadershipPage() {
       name: "Dr. Joseph Mwanza",
       role: "Executive Director",
       bio: "With over 20 years of experience in agricultural development, Dr. Mwanza leads CGAZ's strategic vision and operations.",
-      image: "/images/team/executive-director.jpg",
       email: "j.mwanza@cgaz.org",
       linkedin: "#",
     },
@@ -30,7 +55,6 @@ export default function LeadershipPage() {
       name: "Grace Banda",
       role: "Director of Operations",
       bio: "Grace oversees daily operations across all 145 development centers, ensuring quality service delivery to members.",
-      image: "/images/team/director-operations.jpg",
       email: "g.banda@cgaz.org",
       linkedin: "#",
     },
@@ -38,7 +62,6 @@ export default function LeadershipPage() {
       name: "Peter Zulu",
       role: "Director of Training & Development",
       bio: "Peter manages CGAZ's comprehensive training programs, having trained over 15,000 farmers in modern techniques.",
-      image: "/images/team/director-training.jpg",
       email: "p.zulu@cgaz.org",
       linkedin: "#",
     },
@@ -46,7 +69,6 @@ export default function LeadershipPage() {
       name: "Martha Chilufya",
       role: "Director of Market Access",
       bio: "Martha develops and maintains relationships with buyers, opening new markets for CGAZ members domestically and internationally.",
-      image: "/images/team/director-market.jpg",
       email: "m.chilufya@cgaz.org",
       linkedin: "#",
     },
@@ -57,37 +79,31 @@ export default function LeadershipPage() {
       name: "Hon. Isaac Mbewe",
       role: "Board Chairperson",
       bio: "Former Deputy Minister of Agriculture with extensive experience in agricultural policy and farmer cooperatives.",
-      image: "/images/team/board-chair.jpg",
     },
     {
       name: "Prof. Sarah Phiri",
       role: "Vice Chairperson",
       bio: "Agricultural economist and professor at University of Zambia, specializing in rural development.",
-      image: "/images/team/board-vice-chair.jpg",
     },
     {
       name: "Daniel Tembo",
       role: "Board Member",
       bio: "Seasoned cashew farmer and founding member of CGAZ, representing grassroots farmer interests.",
-      image: "/images/team/board-member-1.jpg",
     },
     {
       name: "Elizabeth Kabwe",
       role: "Board Member",
       bio: "Financial expert with background in agricultural financing and microfinance institutions.",
-      image: "/images/team/board-member-2.jpg",
     },
     {
       name: "Michael Sakala",
       role: "Board Member",
       bio: "International trade specialist focusing on agricultural exports and market development.",
-      image: "/images/team/board-member-3.jpg",
     },
     {
       name: "Ruth Mwale",
       role: "Board Secretary",
       bio: "Legal professional specializing in cooperative law and agricultural policy advocacy.",
-      image: "/images/team/board-secretary.jpg",
     },
   ];
 
@@ -124,6 +140,8 @@ export default function LeadershipPage() {
       <Hero
         title="Leadership Team"
         subtitle="Meet the dedicated leaders guiding CGAZ's mission to empower cashew farmers across Zambia."
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg"
+        objectPosition="center 25%"
         height="medium"
       />
 
@@ -166,14 +184,9 @@ export default function LeadershipPage() {
                 hoverable
                 className="p-6 bg-white shadow-lg text-center"
               >
-                {/* Profile Image */}
-                <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-cashew-green/20">
-                  <OptimizedImage
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
+                {/* Profile Avatar */}
+                <div className="flex justify-center mb-4">
+                  <AvatarPlaceholder name={member.name} size="md" />
                 </div>
 
                 {/* Name & Role */}
@@ -248,14 +261,9 @@ export default function LeadershipPage() {
                 className="p-6 bg-neutral-50 shadow-lg"
               >
                 <div className="flex gap-4 mb-4">
-                  {/* Profile Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-full overflow-hidden border-3 border-sky-blue/20">
-                    <OptimizedImage
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      className="object-cover"
-                    />
+                  {/* Profile Avatar */}
+                  <div className="flex-shrink-0">
+                    <AvatarPlaceholder name={member.name} size="sm" />
                   </div>
 
                   {/* Name & Role */}
@@ -263,7 +271,7 @@ export default function LeadershipPage() {
                     <h3 className="text-lg font-bold text-neutral-900 mb-1">
                       {member.name}
                     </h3>
-                    <p className="text-sm font-semibold text-sky-blue">
+                    <p className="text-sm font-semibold text-cashew-green">
                       {member.role}
                     </p>
                   </div>

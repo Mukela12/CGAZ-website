@@ -71,9 +71,9 @@ export function Footer({ className, variant = "default" }: FooterProps) {
   ];
 
   const contactInfo = [
-    { icon: Phone, text: "+260 XXX XXX XXX" },
-    { icon: Mail, text: "info@cgaz.org.zm" },
-    { icon: MapPin, text: "Mongu, Western Province, Zambia" },
+    { icon: Phone, text: "+260 977 429 666" },
+    { icon: Mail, text: "allanchinambu666@gmail.com" },
+    { icon: MapPin, text: "ZARI, Room 09, Mongu, Zambia" },
   ];
 
   const baseStyles = variant === "glass"

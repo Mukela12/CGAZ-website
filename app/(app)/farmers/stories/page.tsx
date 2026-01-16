@@ -124,6 +124,7 @@ export default function SuccessStoriesPage() {
         subtitle="Real farmers. Real results. Get inspired by the transformative journeys of CGAZ members."
         height="medium"
         backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379304/Womenbeneficiariesatthelaunchofthe2025_26plantingseason3_xmpfxh.jpg"
+        objectPosition="center 30%"
       />
 
       {/* Introduction */}
@@ -261,48 +262,6 @@ export default function SuccessStoriesPage() {
                       ))}
                     </div>
                   </div>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Video Testimonials */}
-      <section className="py-16 lg:py-24 bg-gradient-to-br from-neutral-900 to-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Hear From Our Members
-            </h2>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto">
-              Watch video testimonials from farmers sharing their CGAZ journey.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {[1, 2, 3].map((video) => (
-              <GlassCard
-                key={video}
-                hoverable
-                className="relative h-64 bg-neutral-800 border-white/10 overflow-hidden group cursor-pointer"
-              >
-                <OptimizedImage
-                  src={`/images/video-thumb-${video}.jpg`}
-                  alt={`Video testimonial ${video}`}
-                  fill
-                  className="object-cover opacity-60 group-hover:opacity-80 transition-opacity"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                    <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1" />
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <div className="text-white font-semibold">
-                    Success Story #{video}
-                  </div>
-                  <div className="text-white/80 text-sm">3:24</div>
                 </div>
               </GlassCard>
             ))}

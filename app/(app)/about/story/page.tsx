@@ -8,40 +8,40 @@ import { GlassCard } from "@/components/shared/GlassCard";
 export default function OurStoryPage() {
   const milestones = [
     {
-      year: "2010",
+      year: "2007",
       title: "Foundation",
       description:
-        "CGAZ was established by a group of dedicated cashew farmers seeking to improve their livelihoods and create sustainable farming practices.",
+        "CGAZ was registered under the Societies Act (Registration No. ORS/101/06/176) by dedicated cashew farmers seeking to rehabilitate degraded land and create sustainable livelihoods in Western Province.",
     },
     {
-      year: "2013",
-      title: "First Training Program",
+      year: "2009",
+      title: "First Project",
       description:
-        "Launched our first comprehensive training program, reaching 500 farmers across 3 districts with modern farming techniques.",
+        "Launched the Mongu Cashew Development and Environmental Protection Project with Ministry of Lands support, establishing the foundation for community cashew development.",
     },
     {
-      year: "2016",
-      title: "Government Partnership",
+      year: "2011",
+      title: "European Commission Support",
       description:
-        "Secured partnership with the Ministry of Agriculture to expand services and establish development centers nationwide.",
+        "Received capacity building support from the European Commission, strengthening organizational systems and farmer training programs.",
     },
     {
-      year: "2019",
-      title: "10,000 Members",
+      year: "2015",
+      title: "World Bank Partnership",
       description:
-        "Reached a major milestone of 10,000 registered members, becoming one of Zambia's largest agricultural cooperatives.",
+        "Became Climate Risk Adaptation Facilitator under the Pilot Project for Climate Resilience (PPCR II), developing 250 Community Adaptation Projects across Western Province.",
     },
     {
-      year: "2022",
-      title: "Export Market Access",
+      year: "2017",
+      title: "African Development Bank Project",
       description:
-        "Successfully established export channels, connecting Zambian cashew farmers to international markets.",
+        "Launched the Cashew Infrastructure Development Project (CIDP) with AfDB funding, mobilizing over 22,000 farmers and establishing warehouse receipt systems.",
     },
     {
       year: "2024",
       title: "22,490 Members Strong",
       description:
-        "Continued growth to over 22,000 members across 145 centers, with expanded training and support programs.",
+        "Reached 22,490 members across 145 Cashew Development Centers in 10 districts, with the launch of the GIZ/EU-funded Nalolo Women & Youth Empowerment Project.",
     },
   ];
 
@@ -51,6 +51,8 @@ export default function OurStoryPage() {
       <Hero
         title="Our Story"
         subtitle="From humble beginnings to becoming Zambia's leading cashew farming association."
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/FormerRepublicanPresidentH.EEdgar.LunguandGenderMinisterProfessorNandiLuoAdmiresProcessedCashewNutsAtTheCGAZStandDuringTheWomenEmpowermentExhibition34_qifhjq.jpg"
+        objectPosition="center 35%"
         height="medium"
       />
 
@@ -63,21 +65,20 @@ export default function OurStoryPage() {
                 How It All Began
               </h2>
               <p className="text-lg text-neutral-600 leading-relaxed mb-6">
-                The Cashew Growers Association of Zambia was born from a simple
-                yet powerful vision: to empower cashew farmers and create a
-                thriving, sustainable industry that would benefit generations to
-                come.
+                The Cashew Growers Association of Zambia was established in 2007
+                with a powerful vision: to build a strong cashew industry where
+                Zambians equitably benefit in all stages of the cashew value chain.
               </p>
               <p className="text-lg text-neutral-600 leading-relaxed mb-6">
-                In 2010, a small group of passionate farmers in southern Zambia
-                came together to address common challenges they faced: limited
-                access to quality seedlings, lack of proper training in modern
-                farming techniques, and difficulty reaching profitable markets.
+                Founded in Western Province, CGAZ emerged from the recognition that
+                cashew trees could transform the heavily degraded Kalahari sand
+                landscapes into productive orchards, providing sustainable livelihoods
+                for vulnerable communities while rehabilitating the environment.
               </p>
               <p className="text-lg text-neutral-600 leading-relaxed">
-                What started as informal meetings under a cashew tree has grown
-                into a nationwide movement, representing over 22,000 farmers and
-                transforming communities across Zambia.
+                From our headquarters at the Zambia Agriculture Research Institute
+                in Mongu, we have grown to represent over 22,490 farmers across
+                145 Cashew Development Centers in 10 districts of Western Province.
               </p>
             </div>
             <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
@@ -183,8 +184,8 @@ export default function OurStoryPage() {
             <div className="text-center p-6">
               <div className="relative h-48 mb-6 rounded-xl overflow-hidden">
                 <OptimizedImage
-                  src="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379305/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg"
-                  alt="CGAZ market access initiatives - women working in cashew processing factory"
+                  src="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379302/PromotingSmallScaleCashewprocessing_rvgssn.jpg"
+                  alt="Promoting small scale cashew processing - market access initiatives"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                   className="object-cover"

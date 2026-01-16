@@ -148,6 +148,7 @@ export default function TrainingProgramsPage() {
         subtitle="Comprehensive training to help you build a successful and sustainable cashew farming business."
         height="medium"
         backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg"
+        objectPosition="center 25%"
       />
 
       {/* Introduction */}

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/shared/GlassCard";
+import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 import { cn } from "@/lib/utils/cn";
 import { LucideIcon } from "lucide-react";
 
@@ -103,10 +104,14 @@ export function Stats({
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.15,
+                ease: [0.25, 0.46, 0.45, 0.94] // Apple-like easing
+              }}
             >
               <GlassCard
                 variant={isGlass ? "primary" : "primary"}
@@ -136,7 +141,29 @@ export function Stats({
                   )}
                   suppressHydrationWarning
                 >
-                  {stat.value}
+                  {(() => {
+                    // Parse value to extract numeric part and suffix
+                    const valueStr = stat.value.toString();
+                    const numericMatch = valueStr.match(/^([\d,]+\.?\d*)(.*)$/);
+
+                    if (numericMatch) {
+                      const numericPart = parseFloat(numericMatch[1].replace(/,/g, ''));
+                      const suffix = numericMatch[2] || '';
+
+                      if (!isNaN(numericPart)) {
+                        return (
+                          <AnimatedCounter
+                            value={numericPart}
+                            suffix={suffix}
+                            duration={2000}
+                          />
+                        );
+                      }
+                    }
+
+                    // Fallback for non-numeric values
+                    return stat.value;
+                  })()}
                 </div>
 
                 {/* Label */}

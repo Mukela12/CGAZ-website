@@ -46,19 +46,20 @@ export default function ContactPage() {
       icon: MapPin,
       title: "Head Office",
       details: [
-        "Mongu, Western Province",
-        "Zambia",
+        "Zambia Agriculture Research Institute",
+        "Room 09, Next to Mongu Civic Centre",
+        "P.O. Box 910067 Mongu",
       ],
     },
     {
       icon: Phone,
       title: "Phone",
-      details: ["+260 XXX XXX XXX", "Mon-Fri: 8:00 AM - 5:00 PM"],
+      details: ["+260 977 429 666", "Mon-Fri: 8:00 AM - 5:00 PM"],
     },
     {
       icon: Mail,
       title: "Email",
-      details: ["info@cgaz.org.zm", "support@cgaz.org.zm"],
+      details: ["allanchinambu666@gmail.com", "info@cgaz.org.zm"],
     },
     {
       icon: Clock,
@@ -70,23 +71,23 @@ export default function ContactPage() {
   const regionalOffices = [
     {
       name: "Mongu District",
-      address: "Head Office, Mongu",
-      phone: "+260 XXX XXX XXX",
+      address: "ZARI, Room 09, Mongu",
+      phone: "+260 977 429 666",
     },
     {
-      name: "Senanga District",
-      address: "Senanga Development Center",
-      phone: "+260 XXX XXX XXX",
+      name: "Limulunga District",
+      address: "Limulunga CDC - 3,869 members",
+      phone: "Contact Head Office",
     },
     {
       name: "Kalabo District",
-      address: "Kalabo Development Center",
-      phone: "+260 XXX XXX XXX",
+      address: "Kalabo CDC - 2,520 members",
+      phone: "Contact Head Office",
     },
     {
-      name: "Shangombo District",
-      address: "Shangombo Development Center",
-      phone: "+260 XXX XXX XXX",
+      name: "Senanga District",
+      address: "Senanga CDC - 2,180 members",
+      phone: "Contact Head Office",
     },
   ];
 
@@ -97,7 +98,8 @@ export default function ContactPage() {
         title="Get in Touch"
         subtitle="Have questions or want to learn more about CGAZ? We're here to help. Reach out to us today."
         height="medium"
-        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379300/CashewGrowersAssociationPosterOnWall_j4vskk.jpg"
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg"
+        objectPosition="center 40%"
       />
 
       {/* Contact Info Cards */}
@@ -271,13 +273,16 @@ export default function ContactPage() {
                 <div className="text-center p-8">
                   <MapPin className="w-16 h-16 text-cashew-green mx-auto mb-4" />
                   <p className="text-neutral-600 text-lg font-medium mb-2">
-                    Map Location
+                    CGAZ Head Office
                   </p>
                   <p className="text-neutral-500 text-sm">
-                    Mongu, Western Province, Zambia
+                    Zambia Agriculture Research Institute (ZARI)
+                  </p>
+                  <p className="text-neutral-500 text-sm">
+                    Room 09, Next to Mongu Civic Centre
                   </p>
                   <p className="text-neutral-400 text-xs mt-4">
-                    Interactive map will be integrated here
+                    Mongu, Western Province, Zambia
                   </p>
                 </div>
               </GlassCard>

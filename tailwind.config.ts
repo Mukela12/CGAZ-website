@@ -54,6 +54,20 @@ const config: Config = {
       boxShadow: {
         glass: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
         "glass-lg": "0 12px 40px 0 rgba(31, 38, 135, 0.45)",
+        "nav": "0 4px 20px -2px rgba(0, 0, 0, 0.1)",
+        "nav-lg": "0 8px 30px -4px rgba(0, 0, 0, 0.15)",
+      },
+      dropShadow: {
+        "hero": [
+          "0 2px 4px rgba(0, 0, 0, 0.5)",
+          "0 4px 12px rgba(0, 0, 0, 0.4)",
+        ],
+        "hero-lg": [
+          "0 4px 8px rgba(0, 0, 0, 0.6)",
+          "0 8px 24px rgba(0, 0, 0, 0.4)",
+        ],
+        "text": "0 2px 4px rgba(0, 0, 0, 0.5)",
+        "text-lg": "0 4px 8px rgba(0, 0, 0, 0.5)",
       },
     },
   },

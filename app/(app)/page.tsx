@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Hero } from "@/components/shared/Hero";
+import { motion } from "framer-motion";
+import { HeroSlideshow } from "@/components/shared/HeroSlideshow";
 import { Stats } from "@/components/shared/Stats";
 import { Footer } from "@/components/shared/Footer";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { Button } from "@/components/shared/Button";
 import { OptimizedImage } from "@/components/shared/OptimizedImage";
-import { ImageSlider } from "@/components/shared/ImageSlider";
 import { Users, MapPin, Sprout, TrendingUp, ArrowRight } from "lucide-react";
 import { useSiteMetrics } from "@/lib/hooks/useSiteMetrics";
 
@@ -47,48 +47,43 @@ export default function Home() {
     },
   ];
 
-  // Image slider data showcasing CGAZ's work
-  const gallerySlides = [
+  // Hero slideshow images showcasing CGAZ's work
+  const heroSlides = [
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/FormerRepublicanPresidentH.EEdgar.LunguandGenderMinisterProfessorNandiLuoAdmiresProcessedCashewNutsAtTheCGAZStandDuringTheWomenEmpowermentExhibition34_qifhjq.jpg",
       alt: "Former Republican President H.E Edgar Lungu and Gender Minister Professor Nandi Luo admires processed cashew nuts at CGAZ stand",
-      caption: "Presidential Visit: Former President Edgar Lungu admiring CGAZ processed cashew nuts"
     },
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg",
       alt: "Cashew Master Trainers at a training session in Limulunga District",
-      caption: "Training Excellence: Master trainers empowering farmers with modern cashew farming techniques"
     },
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379300/Officiallaunchofthe2025_26cashewseedlingdistributionbyCGAZ22_mhtksl.jpg",
       alt: "Official launch of 2025-26 cashew seedling distribution by CGAZ",
-      caption: "Seedling Distribution: Launching the 2025-26 planting season with thousands of improved seedlings"
     },
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379305/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg",
       alt: "Women working in a cashew processing factory in Mongu",
-      caption: "Value Addition: Women-led processing creating economic opportunities in Mongu"
     },
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg",
       alt: "Participants at the National Cashew Consultative Forum",
-      caption: "Policy Engagement: National stakeholders shaping Zambia's cashew development strategy"
     },
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg",
       alt: "Women beneficiaries at the launch of 2025-26 seedling distribution",
-      caption: "Women Empowerment: Female farmers receiving seedlings for sustainable livelihoods"
     }
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <Hero
+      {/* Hero Section with Slideshow */}
+      <HeroSlideshow
         title="Empowering Zambian Cashew Farmers"
         subtitle="Supporting 22,490 farmers across 145 centers with sustainable agricultural practices, quality training, and market access opportunities."
         height="large"
-        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/FormerRepublicanPresidentH.EEdgar.LunguandGenderMinisterProfessorNandiLuoAdmiresProcessedCashewNutsAtTheCGAZStandDuringTheWomenEmpowermentExhibition34_qifhjq.jpg"
+        slides={heroSlides}
+        autoPlayInterval={5000}
         primaryCta={{
           label: "Learn More",
           href: "/about",
@@ -107,45 +102,33 @@ export default function Home() {
         className="bg-neutral-50"
       />
 
-      {/* Image Gallery Slider Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4">
-              CGAZ in Action
-            </h2>
-            <p className="text-lg sm:text-xl text-neutral-600 max-w-3xl mx-auto">
-              Witness the impact we're making across Zambia through training, empowerment, and sustainable cashew farming
-            </p>
-          </div>
-
-          <div className="relative h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl">
-            <ImageSlider
-              slides={gallerySlides}
-              autoPlayInterval={5000}
-              showControls={true}
-              showIndicators={true}
-            />
-          </div>
-        </div>
-      </section>
-
       {/* About Preview Section */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
-            <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl"
+            >
               <OptimizedImage
                 src="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg"
                 alt="Participants at the National Cashew Consultative Forum organized by CGAZ"
                 fill
                 className="object-cover"
               />
-            </div>
+            </motion.div>
 
             {/* Content */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 mb-6">
                 About CGAZ
               </h2>
@@ -169,7 +152,7 @@ export default function Home() {
                   Our Story
                 </Button>
               </Link>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -185,79 +168,112 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12 lg:mb-16"
+          >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               What We Offer
             </h2>
             <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
               Comprehensive support for every stage of your cashew farming journey
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Training Programs */}
-            <GlassCard variant="primary" hoverable className="p-8">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                <Sprout className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                Training Programs
-              </h3>
-              <p className="text-white/80 mb-4">
-                Professional training in modern farming techniques, pest
-                management, and sustainable practices.
-              </p>
-              <Link href="/farmers/training">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                  Learn More
-                </Button>
-              </Link>
-            </GlassCard>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              <GlassCard variant="primary" hoverable className="p-8 h-full">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                  <Sprout className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">
+                  Training Programs
+                </h3>
+                <p className="text-white/80 mb-4">
+                  Professional training in modern farming techniques, pest
+                  management, and sustainable practices.
+                </p>
+                <Link href="/farmers/training">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                    Learn More
+                  </Button>
+                </Link>
+              </GlassCard>
+            </motion.div>
 
             {/* Market Access */}
-            <GlassCard variant="primary" hoverable className="p-8">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                Market Access
-              </h3>
-              <p className="text-white/80 mb-4">
-                Connect with buyers, access fair prices, and expand your market
-                reach through our network.
-              </p>
-              <Link href="/products">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                  Learn More
-                </Button>
-              </Link>
-            </GlassCard>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              <GlassCard variant="primary" hoverable className="p-8 h-full">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">
+                  Market Access
+                </h3>
+                <p className="text-white/80 mb-4">
+                  Connect with buyers, access fair prices, and expand your market
+                  reach through our network.
+                </p>
+                <Link href="/products">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                    Learn More
+                  </Button>
+                </Link>
+              </GlassCard>
+            </motion.div>
 
             {/* Community Support */}
-            <GlassCard variant="primary" hoverable className="p-8">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                Community Support
-              </h3>
-              <p className="text-white/80 mb-4">
-                Join a thriving community of farmers, share knowledge, and grow
-                together.
-              </p>
-              <Link href="/farmers/stories">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                  Learn More
-                </Button>
-              </Link>
-            </GlassCard>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              <GlassCard variant="primary" hoverable className="p-8 h-full">
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-3">
+                  Community Support
+                </h3>
+                <p className="text-white/80 mb-4">
+                  Join a thriving community of farmers, share knowledge, and grow
+                  together.
+                </p>
+                <Link href="/farmers/stories">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                    Learn More
+                  </Button>
+                </Link>
+              </GlassCard>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Call to Action Section */}
       <section className="py-16 lg:py-24 bg-neutral-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 mb-6">
             Ready to Join CGAZ?
           </h2>
@@ -278,7 +294,7 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}

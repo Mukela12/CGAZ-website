@@ -102,6 +102,7 @@ export default function TrainingRegisterPage() {
   }
 
   const courses = [
+    { value: 'membership', label: 'CGAZ Annual Membership (ZMW 70)' },
     { value: 'foundation', label: 'Foundation Course - Cashew Cultivation Basics' },
     { value: 'pest-management', label: 'Integrated Pest Management' },
     { value: 'pruning', label: 'Pruning & Tree Management' },
@@ -118,7 +119,8 @@ export default function TrainingRegisterPage() {
         title="Register for Training"
         subtitle="Join our comprehensive training programs and enhance your cashew farming skills"
         height="medium"
-        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379295/Cashew-Nursery11_ujzxc6.jpg"
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379303/TrainingInGraftingTechniquesDuringTheFarmerTrainingWorkshopAtNamushakendeFarmerTrainingInstituteInMongu12_yv0rix.jpg"
+        objectPosition="center 35%"
       />
 
       {/* Registration Form */}

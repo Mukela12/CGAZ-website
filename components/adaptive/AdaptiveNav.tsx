@@ -1,17 +1,17 @@
 "use client";
 
 import { useDevice } from "@/lib/hooks/useDevice";
-import { MobileBottomNav } from "@/components/mobile/Navigation/MobileBottomNav";
+import { MobileTopNav } from "@/components/mobile/Navigation/MobileTopNav";
 import { DesktopTopNav } from "@/components/desktop/Navigation/DesktopTopNav";
 
 /**
  * Adaptive Navigation Component
  *
- * Automatically switches between mobile bottom navigation and desktop top navigation
+ * Automatically switches between mobile top navigation and desktop top navigation
  * based on device screen size (1024px breakpoint).
  *
- * - Mobile (< 1024px): Bottom navigation bar
- * - Desktop (≥ 1024px): Top horizontal navigation bar
+ * - Mobile (< 1024px): Top navigation with hamburger menu
+ * - Desktop (≥ 1024px): Top horizontal navigation bar with glassmorphic effects
  *
  * @example
  * ```tsx
@@ -26,5 +26,5 @@ export function AdaptiveNav() {
     return null;
   }
 
-  return isMobile ? <MobileBottomNav /> : <DesktopTopNav />;
+  return isMobile ? <MobileTopNav /> : <DesktopTopNav />;
 }

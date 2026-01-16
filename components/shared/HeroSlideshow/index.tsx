@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -7,13 +8,22 @@ import { OptimizedImage } from "@/components/shared/OptimizedImage";
 import { Button } from "@/components/shared/Button";
 import { cn } from "@/lib/utils/cn";
 
-interface HeroProps {
+interface Slide {
+  image: string;
+  alt: string;
+  /** Optional object position for this specific slide */
+  objectPosition?: string;
+}
+
+interface HeroSlideshowProps {
   /** Hero title */
   title: string;
   /** Hero subtitle/description */
   subtitle: string;
-  /** Background image URL (optional - uses gradient if not provided) */
-  backgroundImage?: string;
+  /** Array of background images to cycle through */
+  slides: Slide[];
+  /** Auto-play interval in milliseconds */
+  autoPlayInterval?: number;
   /** Primary call-to-action button */
   primaryCta?: {
     label: string;
@@ -30,48 +40,88 @@ interface HeroProps {
   className?: string;
   /** Hero height variant */
   height?: "small" | "medium" | "large" | "full";
-  /** Image object position for controlling focal point (e.g., "top", "center", "bottom", "center 30%") */
+  /** Show slide indicators */
+  showIndicators?: boolean;
+  /** Show progress bar */
+  showProgress?: boolean;
+  /** Default object position for all slides (can be overridden per slide) */
   objectPosition?: string;
 }
 
 /**
- * Hero Section Component
+ * Hero Slideshow Component
  *
- * Full-width hero section with premium cinematic design:
- * - Background image with enhanced gradient overlay
+ * Full-width hero section with auto-cycling background slideshow:
+ * - Multiple background images that crossfade automatically
  * - Bold typography directly on image (no glass card)
- * - Bottom-left positioned content for modern feel
+ * - Bottom-left positioned content for cinematic feel
+ * - Progress bar showing slide timing
  * - Premium text shadows for legibility
- * - Animated entrance effects
- * - Call-to-action buttons
  *
  * @example
  * ```tsx
- * <Hero
- *   title="Empowering Zambian Cashew Farmers"
- *   subtitle="Supporting 22,490 farmers across 145 centers"
- *   backgroundImage="/images/hero-farmers.jpg"
+ * <HeroSlideshow
+ *   title="Empowering Zambian Farmers"
+ *   subtitle="Supporting farmers across Zambia"
+ *   slides={[
+ *     { image: "/img1.jpg", alt: "Farmers" },
+ *     { image: "/img2.jpg", alt: "Training" },
+ *   ]}
  *   primaryCta={{ label: "Learn More", href: "/about" }}
- *   secondaryCta={{ label: "Join CGAZ", href: "/farmers/join" }}
  * />
  * ```
  */
-export function Hero({
+export function HeroSlideshow({
   title,
   subtitle,
-  backgroundImage,
+  slides,
+  autoPlayInterval = 5000,
   primaryCta,
   secondaryCta,
   className,
   height = "large",
-  objectPosition = "center",
-}: HeroProps) {
+  showIndicators = true,
+  showProgress = true,
+  objectPosition = "center 30%",
+}: HeroSlideshowProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+
   const heightStyles = {
     small: "min-h-[50vh]",
     medium: "min-h-[60vh]",
-    large: "min-h-[80vh]",
+    large: "min-h-[85vh]",
     full: "min-h-screen",
   };
+
+  // Auto-play slideshow
+  useEffect(() => {
+    if (slides.length <= 1) return;
+
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+          return 0;
+        }
+        return prev + (100 / (autoPlayInterval / 50));
+      });
+    }, 50);
+
+    return () => clearInterval(progressInterval);
+  }, [slides.length, autoPlayInterval]);
+
+  // Reset progress when slide changes
+  useEffect(() => {
+    setProgress(0);
+  }, [currentIndex]);
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    setProgress(0);
+  };
+
+  if (slides.length === 0) return null;
 
   return (
     <section
@@ -81,29 +131,52 @@ export function Hero({
         className
       )}
     >
-      {/* Background Image or Gradient */}
+      {/* Background Slideshow - True Crossfade */}
       <div className="absolute inset-0 z-0">
-        {backgroundImage ? (
-          <>
+        {/* Render all slides, animate opacity for smooth crossfade */}
+        {slides.map((slide, index) => (
+          <motion.div
+            key={index}
+            initial={false}
+            animate={{
+              opacity: index === currentIndex ? 1 : 0,
+              scale: index === currentIndex ? 1 : 1.05,
+            }}
+            transition={{
+              opacity: { duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] },
+              scale: { duration: 6, ease: "linear" },
+            }}
+            className="absolute inset-0"
+            style={{ zIndex: index === currentIndex ? 1 : 0 }}
+          >
             <OptimizedImage
-              src={backgroundImage}
-              alt={title}
+              src={slide.image}
+              alt={slide.alt}
               fill
               className="object-cover"
-              style={{ objectPosition }}
-              priority
+              style={{ objectPosition: slide.objectPosition || objectPosition }}
+              priority={index === 0}
             />
-            {/* Enhanced gradient overlay - bottom heavy for text legibility */}
-            <div className="absolute inset-0 z-10">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-            </div>
-          </>
-        ) : (
-          /* Agricultural gradient background as fallback */
-          <div className="absolute inset-0 bg-gradient-to-br from-cashew-green via-cashew-dark-green to-earth-brown" />
-        )}
+          </motion.div>
+        ))}
+
+        {/* Enhanced gradient overlay - bottom heavy for text legibility */}
+        <div className="absolute inset-0 z-10">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+        </div>
       </div>
+
+      {/* Progress Bar */}
+      {showProgress && slides.length > 1 && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-30">
+          <motion.div
+            className="h-full bg-cashew-green"
+            style={{ width: `${progress}%` }}
+            transition={{ duration: 0.05, ease: "linear" }}
+          />
+        </div>
+      )}
 
       {/* Content Container - Bottom Left Positioned */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 lg:pb-28 pt-32">
@@ -191,6 +264,25 @@ export function Hero({
           )}
         </motion.div>
       </div>
+
+      {/* Slide Indicators - Positioned above bottom edge */}
+      {showIndicators && slides.length > 1 && (
+        <div className="absolute bottom-6 sm:bottom-8 right-4 sm:right-8 lg:right-12 z-30 flex gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                index === currentIndex
+                  ? "bg-cashew-green w-8"
+                  : "bg-white/40 w-2 hover:bg-white/60"
+              )}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Scroll Indicator (for full height) */}
       {height === "full" && (

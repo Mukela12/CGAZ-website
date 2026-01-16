@@ -126,6 +126,7 @@ export default function JoinCGAZPage() {
         subtitle="Become part of Zambia's largest cashew farming community and transform your farm into a thriving business."
         height="medium"
         backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379306/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg"
+        objectPosition="center 25%"
       />
 
       {/* Introduction */}

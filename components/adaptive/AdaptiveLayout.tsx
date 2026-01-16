@@ -11,11 +11,11 @@ interface AdaptiveLayoutProps {
  * Adaptive Layout Component
  *
  * Provides the main layout structure that adapts based on device type:
- * - Mobile: Content with bottom padding for bottom navigation
- * - Desktop: Content with top padding for horizontal navbar
+ * - Mobile: Top navigation with hamburger menu (no extra padding needed)
+ * - Desktop: Top navigation bar with glassmorphic effects
  *
- * Includes the AdaptiveNav component which switches between
- * mobile bottom navigation and desktop top navigation.
+ * Navigation overlays hero sections with transparent background,
+ * then becomes solid/glass on scroll.
  *
  * @example
  * ```tsx
@@ -25,13 +25,13 @@ interface AdaptiveLayoutProps {
  * ```
  */
 export function AdaptiveLayout({ children }: AdaptiveLayoutProps) {
-  const { isMobile, isHydrated } = useDevice();
+  const { isHydrated } = useDevice();
 
-  // Prevent layout shift by showing both paddings until hydrated
+  // Prevent layout shift by rendering minimal structure until hydrated
   if (!isHydrated) {
     return (
       <div className="min-h-screen flex flex-col">
-        <main className="flex-1 pb-20">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export function AdaptiveLayout({ children }: AdaptiveLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <AdaptiveNav />
-      <main className={isMobile ? "flex-1 pb-20" : "flex-1"}>{children}</main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
