@@ -316,6 +316,85 @@ async function seedContent() {
     // ============================================================
     console.log('\n🌳 Step 4: Creating CGAZ Projects from official documents...')
 
+    // First, create media records for project images using raw SQL (bypassing Payload upload validation)
+    console.log('  📸 Creating project images...')
+
+    const projectImages = [
+      {
+        alt: 'Mongu Cashew Development Project - Farmer training session',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug',
+      },
+      {
+        alt: 'Capacity Building Project - Training workshop',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379303/TrainingInGraftingTechniquesDuringTheFarmerTrainingWorkshopAtNamushakendeFarmerTrainingInstituteInMongu12_yv0rix.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/TrainingInGraftingTechniquesDuringTheFarmerTrainingWorkshopAtNamushakendeFarmerTrainingInstituteInMongu12_yv0rix',
+      },
+      {
+        alt: 'PPCR II Climate Adaptation - Community project',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk',
+      },
+      {
+        alt: 'CIDP Infrastructure Development - Cashew processing facility',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379305/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl',
+      },
+      {
+        alt: 'Women and Youth Empowerment - Female farmers',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef',
+      },
+      {
+        alt: 'WASH Expansion Project - Community development',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379302/PromotingSmallScaleCashewprocessing_rvgssn.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/PromotingSmallScaleCashewprocessing_rvgssn',
+      },
+      {
+        alt: 'Nalolo Women and Youth Project - Seedling distribution',
+        cloudinaryUrl: 'https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379300/Officiallaunchofthe2025_26cashewseedlingdistributionbyCGAZ22_mhtksl.jpg',
+        cloudinaryPublicId: 'CGAZ-IMAGES/Officiallaunchofthe2025_26cashewseedlingdistributionbyCGAZ22_mhtksl',
+      },
+    ]
+
+    // Insert media records directly via Payload's db adapter
+    const projectImageIds: number[] = []
+
+    for (const img of projectImages) {
+      try {
+        // Check if media already exists with this cloudinaryPublicId
+        const existing = await payload.find({
+          collection: 'media',
+          where: {
+            cloudinaryPublicId: { equals: img.cloudinaryPublicId },
+          },
+          limit: 1,
+        })
+
+        if (existing.docs.length > 0) {
+          projectImageIds.push(existing.docs[0].id as number)
+          console.log(`    ℹ️  Using existing image: ${img.alt.substring(0, 40)}...`)
+        } else {
+          // Create via raw SQL since Payload requires file upload
+          const result = await payload.db.drizzle.execute({
+            sql: `INSERT INTO media (alt, cloudinary_url, cloudinary_public_id, category, created_at, updated_at)
+                  VALUES ($1, $2, $3, 'farming', NOW(), NOW())
+                  RETURNING id`,
+            params: [img.alt, img.cloudinaryUrl, img.cloudinaryPublicId],
+          })
+
+          const newId = (result as any).rows?.[0]?.id || (result as any)[0]?.id
+          if (newId) {
+            projectImageIds.push(newId)
+            console.log(`    ✅ Created image: ${img.alt.substring(0, 40)}...`)
+          }
+        }
+      } catch (error: any) {
+        console.log(`    ⚠️  Image creation failed: ${error.message}`)
+        projectImageIds.push(0) // placeholder
+      }
+    }
+
     // Helper function to create simple rich text format for Payload
     const createRichText = (htmlContent: string) => {
       // Convert simple HTML paragraphs to Payload's Slate format
@@ -607,7 +686,10 @@ async function seedContent() {
       },
     ]
 
-    for (const project of projects) {
+    for (let i = 0; i < projects.length; i++) {
+      const project = projects[i]
+      const imageId = projectImageIds[i] || null
+
       try {
         // Strip HTML tags for plain text description (Payload will handle rich text differently)
         const plainDescription = project.description
@@ -629,6 +711,7 @@ async function seedContent() {
             budget: project.budget,
             impactMetrics: project.impactMetrics,
             featured: project.featured,
+            ...(imageId ? { featuredImage: imageId } : {}),
           },
         })
         console.log(`  ✅ Created project: ${project.title}`)

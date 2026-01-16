@@ -1,6 +1,7 @@
 import { Hero } from "@/components/shared/Hero";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { Footer } from "@/components/shared/Footer";
+import { OptimizedImage } from "@/components/shared/OptimizedImage";
 import {
   Calendar,
   MapPin,
@@ -133,9 +134,33 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
                 <GlassCard
                   key={project.id}
                   hoverable
-                  className="p-8 bg-white hover:shadow-2xl transition-all duration-300"
+                  className="overflow-hidden bg-white hover:shadow-2xl transition-all duration-300"
                 >
-                  {/* Status Badge */}
+                  {/* Featured Image */}
+                  {project.featuredImage && (
+                    <div className="relative h-48 w-full -mt-0 mb-6">
+                      <OptimizedImage
+                        src={
+                          typeof project.featuredImage === "object"
+                            ? project.featuredImage.cloudinaryUrl ||
+                              project.featuredImage.url ||
+                              ""
+                            : ""
+                        }
+                        alt={
+                          typeof project.featuredImage === "object"
+                            ? project.featuredImage.alt || project.title
+                            : project.title
+                        }
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                      />
+                    </div>
+                  )}
+
+                  <div className={`p-8 ${project.featuredImage ? 'pt-0' : ''}`}>
+                    {/* Status Badge */}
                   <div className="flex items-center justify-between mb-4">
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
@@ -264,6 +289,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
                     View Project Details
                     <ArrowRight className="w-4 h-4" />
                   </Link>
+                  </div>
                 </GlassCard>
               ))}
             </div>

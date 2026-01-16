@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProjectBySlug, getProjects } from "@/lib/payload/api";
 import { Footer } from "@/components/shared/Footer";
+import { OptimizedImage } from "@/components/shared/OptimizedImage";
 import {
   Calendar,
   MapPin,
@@ -92,6 +93,40 @@ export default async function ProjectDetailPage({
     }
   };
 
+  // Helper function to extract text from Payload rich text JSON
+  const extractTextFromRichText = (richText: any): string => {
+    if (!richText) return "";
+    if (typeof richText === "string") return richText;
+
+    // Handle Lexical rich text format
+    if (richText.root && richText.root.children) {
+      const extractFromChildren = (children: any[]): string => {
+        return children
+          .map((child: any) => {
+            if (child.text) return child.text;
+            if (child.children) return extractFromChildren(child.children);
+            return "";
+          })
+          .join("\n\n");
+      };
+      return extractFromChildren(richText.root.children);
+    }
+
+    // Handle Slate rich text format
+    if (Array.isArray(richText)) {
+      return richText
+        .map((node: any) => {
+          if (node.children) {
+            return node.children.map((child: any) => child.text || "").join("");
+          }
+          return "";
+        })
+        .join("\n\n");
+    }
+
+    return "";
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Back Button */}
@@ -106,6 +141,29 @@ export default async function ProjectDetailPage({
           </Link>
         </div>
       </div>
+
+      {/* Featured Image */}
+      {project.featuredImage && (
+        <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full">
+          <OptimizedImage
+            src={
+              typeof project.featuredImage === "object"
+                ? project.featuredImage.cloudinaryUrl || project.featuredImage.url || ""
+                : ""
+            }
+            alt={
+              typeof project.featuredImage === "object"
+                ? project.featuredImage.alt || project.title
+                : project.title
+            }
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        </div>
+      )}
 
       {/* Project Header */}
       <div className="bg-white border-b border-neutral-200">
@@ -176,14 +234,9 @@ export default async function ProjectDetailPage({
                 </h2>
                 <div className="prose prose-lg prose-neutral max-w-none">
                   {project.description ? (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          typeof project.description === "string"
-                            ? project.description
-                            : JSON.stringify(project.description),
-                      }}
-                    />
+                    <div className="text-neutral-600 leading-relaxed whitespace-pre-line">
+                      {extractTextFromRichText(project.description)}
+                    </div>
                   ) : (
                     <p className="text-neutral-600 leading-relaxed">
                       {project.summary}
