@@ -1,6 +1,6 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { slateEditor } from '@payloadcms/richtext-slate'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -69,8 +69,8 @@ export default buildConfig({
     },
   }),
 
-  // Rich text editor
-  editor: slateEditor({}),
+  // Rich text editor (Lexical - recommended for Payload 3.0)
+  editor: lexicalEditor({}),
 
   // Image optimization with sharp
   sharp,

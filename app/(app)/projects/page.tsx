@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Filter,
   ArrowRight,
+  Handshake,
 } from "lucide-react";
 import Link from "next/link";
 import { getProjects } from "@/lib/payload/api";
@@ -279,6 +280,49 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
                         </div>
                       </div>
                     </>
+                  )}
+
+                  {/* Funding Partners */}
+                  {project.fundingAgency && project.fundingAgency.length > 0 && (
+                    <div className="border-t border-neutral-200 pt-4 mb-6">
+                      <h4 className="text-xs font-semibold text-neutral-500 mb-3 flex items-center gap-1.5">
+                        <Handshake className="w-3.5 h-3.5" />
+                        FUNDED BY
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {project.fundingAgency.map((partner: any) => {
+                          const partnerData = typeof partner === 'object' ? partner : null;
+                          if (!partnerData) return null;
+
+                          // Check for logo in multiple places: direct logoUrl, uploaded media, or logo relation
+                          const logoUrl = partnerData.logoUrl || partnerData.logo?.cloudinaryUrl || partnerData.logo?.url;
+                          const partnerName = partnerData.name || 'Partner';
+
+                          return (
+                            <div
+                              key={partnerData.id}
+                              className="flex items-center gap-2 px-2 py-1 rounded-md bg-neutral-100"
+                              title={partnerName}
+                            >
+                              {logoUrl ? (
+                                <img
+                                  src={logoUrl}
+                                  alt={`${partnerName} logo`}
+                                  className="w-5 h-5 object-contain"
+                                />
+                              ) : (
+                                <span className="w-5 h-5 flex items-center justify-center rounded bg-cashew-green/10 text-cashew-green text-xs font-bold">
+                                  {partnerName.charAt(0)}
+                                </span>
+                              )}
+                              <span className="text-xs text-neutral-700 font-medium max-w-[100px] truncate">
+                                {partnerName.split(' ')[0]}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   )}
 
                   {/* View Details Button */}

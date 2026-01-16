@@ -32,7 +32,7 @@ export async function getProjects(status?: string) {
     where,
     sort: '-startDate',
     limit: 50,
-    depth: 2, // Include related data (featured image, etc.)
+    depth: 3, // Include related data (featured image, fundingAgency -> logo)
   })
 
   return docs
@@ -52,7 +52,7 @@ export async function getProjectBySlug(slug: string) {
       slug: { equals: slug },
     },
     limit: 1,
-    depth: 2,
+    depth: 3, // Deep enough to get fundingAgency -> logo relation
   })
 
   return docs[0] || null
@@ -126,9 +126,12 @@ export async function getTeamMembers() {
 
   const { docs } = await payload.find({
     collection: 'team-members',
-    sort: 'order',
+    where: {
+      isActive: { equals: true },
+    },
+    sort: 'displayOrder',
     limit: 100,
-    depth: 1,
+    depth: 2, // Include photo relation
   })
 
   return docs

@@ -48,6 +48,11 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
     }
   };
 
+  // Get download URL - use our API proxy to handle the download properly
+  const getDownloadUrl = (resourceId: number | string, title: string) => {
+    return `/api/resources/${resourceId}/download?filename=${encodeURIComponent(title)}`;
+  };
+
   return (
     <div className="min-h-screen">
       <Hero
@@ -69,7 +74,10 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
                   {getFileIcon(resource.fileType)}
                   <h3 className="font-bold mt-4">{resource.title}</h3>
                   {resource.cloudinaryUrl ? (
-                    <a href={resource.cloudinaryUrl} download className="mt-4 inline-flex items-center gap-2 text-cashew-green hover:text-cashew-dark-green transition-colors">
+                    <a
+                      href={getDownloadUrl(resource.id, resource.title)}
+                      className="mt-4 inline-flex items-center gap-2 text-cashew-green hover:text-cashew-dark-green transition-colors"
+                    >
                       <Download className="w-4 h-4" />Download
                     </a>
                   ) : (

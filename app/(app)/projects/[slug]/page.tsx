@@ -11,6 +11,8 @@ import {
   Sprout,
   ArrowLeft,
   Target,
+  Handshake,
+  ExternalLink,
 } from "lucide-react";
 import { GlassCard } from "@/components/shared/GlassCard";
 
@@ -378,6 +380,83 @@ export default async function ProjectDetailPage({
                       </div>
                     )}
                   </div>
+                </GlassCard>
+              )}
+
+              {/* Funding Partners */}
+              {project.fundingAgency && project.fundingAgency.length > 0 && (
+                <GlassCard className="p-6 bg-white">
+                  <h3 className="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
+                    <Handshake className="w-5 h-5 text-cashew-green" />
+                    Funding Partners
+                  </h3>
+                  <div className="space-y-4">
+                    {project.fundingAgency.map((partner: any) => {
+                      // Handle both populated object and ID-only references
+                      const partnerData = typeof partner === 'object' ? partner : null;
+                      if (!partnerData) return null;
+
+                      // Check for logo in multiple places: uploaded media, direct logoUrl, or logo relation
+                      const logoUrl = partnerData.logoUrl || partnerData.logo?.cloudinaryUrl || partnerData.logo?.url;
+                      const partnerName = partnerData.name || 'Partner';
+
+                      return (
+                        <div
+                          key={partnerData.id}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 hover:bg-neutral-100 transition-colors"
+                        >
+                          {/* Partner Logo */}
+                          <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white border border-neutral-200 flex items-center justify-center overflow-hidden">
+                            {logoUrl ? (
+                              <img
+                                src={logoUrl}
+                                alt={`${partnerName} logo`}
+                                className="w-full h-full object-contain p-1"
+                              />
+                            ) : (
+                              <span className="text-lg font-bold text-cashew-green">
+                                {partnerName.charAt(0)}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Partner Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-neutral-900 text-sm truncate">
+                              {partnerName}
+                            </p>
+                            {partnerData.type && (
+                              <p className="text-xs text-neutral-500 capitalize">
+                                {partnerData.type.replace(/-/g, ' ')}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* External Link */}
+                          {partnerData.website && (
+                            <a
+                              href={partnerData.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 p-1.5 rounded-md hover:bg-neutral-200 transition-colors"
+                              aria-label={`Visit ${partnerName} website`}
+                            >
+                              <ExternalLink className="w-4 h-4 text-neutral-400" />
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Link to Partners Page */}
+                  <Link
+                    href="/about/partners"
+                    className="mt-4 inline-flex items-center gap-1 text-sm text-cashew-green hover:text-cashew-dark-green transition-colors"
+                  >
+                    View all partners
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
                 </GlassCard>
               )}
 

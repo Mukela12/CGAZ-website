@@ -54,6 +54,40 @@ export default async function BlogPostPage({
     });
   };
 
+  // Helper function to extract text from Payload rich text JSON (Lexical format)
+  const extractTextFromRichText = (richText: any): string => {
+    if (!richText) return "";
+    if (typeof richText === "string") return richText;
+
+    // Handle Lexical rich text format
+    if (richText.root && richText.root.children) {
+      const extractFromChildren = (children: any[]): string => {
+        return children
+          .map((child: any) => {
+            if (child.text) return child.text;
+            if (child.children) return extractFromChildren(child.children);
+            return "";
+          })
+          .join("\n\n");
+      };
+      return extractFromChildren(richText.root.children);
+    }
+
+    // Handle Slate rich text format (legacy)
+    if (Array.isArray(richText)) {
+      return richText
+        .map((node: any) => {
+          if (node.children) {
+            return node.children.map((child: any) => child.text || "").join("");
+          }
+          return "";
+        })
+        .join("\n\n");
+    }
+
+    return "";
+  };
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "news":
@@ -145,14 +179,9 @@ export default async function BlogPostPage({
           {/* Content */}
           <div className="prose prose-lg prose-neutral max-w-none mb-12">
             {post.content ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html:
-                    typeof post.content === "string"
-                      ? post.content
-                      : JSON.stringify(post.content),
-                }}
-              />
+              <div className="text-neutral-600 leading-relaxed whitespace-pre-line">
+                {extractTextFromRichText(post.content)}
+              </div>
             ) : (
               <p className="text-neutral-600 leading-relaxed">
                 {post.excerpt || "Content will be available soon."}

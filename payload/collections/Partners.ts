@@ -55,6 +55,17 @@ export const Partners: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       label: 'Partner Logo',
+      admin: {
+        description: 'Upload a logo image (recommended: PNG with transparent background)',
+      },
+    },
+    {
+      name: 'logoUrl',
+      type: 'text',
+      label: 'Logo URL (Cloudinary)',
+      admin: {
+        description: 'Direct Cloudinary URL for the logo (used if no logo uploaded)',
+      },
     },
     {
       name: 'description',
