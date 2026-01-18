@@ -72,6 +72,18 @@ export default function Home() {
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg",
       alt: "Women beneficiaries at the launch of 2025-26 seedling distribution",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379299/Sun-dryingofrawcashews_kfdmyc.jpg",
+      alt: "Sun-drying of raw cashews",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379295/Cashew-Nursery11_ujzxc6.jpg",
+      alt: "CGAZ cashew nursery",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/DistributionOfImprovedCashewPlantingMaterials_gvrekg.jpg",
+      alt: "Distribution of improved cashew planting materials",
     }
   ];
 

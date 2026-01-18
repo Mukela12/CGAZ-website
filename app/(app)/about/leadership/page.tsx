@@ -77,7 +77,7 @@ export default async function LeadershipPage() {
       <Hero
         title="Our Team"
         subtitle="Meet the dedicated team working to empower cashew farmers across Western Province."
-        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg"
+        backgroundImage="https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379298/TraditionalLeadersAttendingACashewMeeting_qiihkf.jpg"
         objectPosition="center 25%"
         height="medium"
       />
