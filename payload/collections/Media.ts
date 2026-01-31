@@ -146,18 +146,12 @@ export const Media: CollectionConfig = {
               console.error('Failed to update media with Cloudinary URL:', updateError)
             }
           } else {
-            // All retries failed - delete the record to prevent orphaned entries
-            console.error(`✗ All Cloudinary upload attempts failed for media ${doc.id}`)
-            try {
-              await req.payload.delete({
-                collection: 'media',
-                id: doc.id,
-              })
-              console.log(`✗ Deleted media record ${doc.id} due to Cloudinary upload failure`)
-            } catch (deleteError) {
-              console.error('Failed to cleanup media record:', deleteError)
-            }
-            throw new Error(`Failed to upload media to Cloudinary after 3 attempts: ${lastError?.message || 'Unknown error'}`)
+            // All retries failed - log warning but don't fail the upload
+            // The local file is still saved and usable
+            console.warn(
+              `⚠ Cloudinary upload failed for media ${doc.id} after 3 attempts. ` +
+              `File saved locally only. Error: ${lastError?.message || 'Unknown'}`
+            )
           }
         }
         return doc
