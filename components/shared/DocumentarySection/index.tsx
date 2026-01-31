@@ -1,54 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useInView } from "framer-motion";
-import { Volume2, VolumeX, Play, Maximize2, Minimize2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Volume2, VolumeX, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useDocumentary } from "@/lib/hooks/useDocumentary";
-
-// YouTube Player API types
-interface YTPlayerOptions {
-  videoId: string;
-  playerVars?: {
-    autoplay?: number;
-    mute?: number;
-    controls?: number;
-    modestbranding?: number;
-    rel?: number;
-    loop?: number;
-    playlist?: string;
-    playsinline?: number;
-    enablejsapi?: number;
-    origin?: string;
-  };
-  events?: {
-    onReady?: (event: { target: YouTubePlayer }) => void;
-    onStateChange?: (event: { data: number }) => void;
-  };
-}
-
-interface YTConstructor {
-  Player: new (elementId: string, options: YTPlayerOptions) => YouTubePlayer;
-}
-
-// Extend window interface to include YouTube API
-declare global {
-  interface Window {
-    YT: YTConstructor;
-    onYouTubeIframeAPIReady: () => void;
-  }
-}
-
-interface YouTubePlayer {
-  playVideo: () => void;
-  pauseVideo: () => void;
-  mute: () => void;
-  unMute: () => void;
-  isMuted: () => boolean;
-  setVolume: (volume: number) => void;
-  getPlayerState: () => number;
-  destroy: () => void;
-}
 
 /**
  * Documentary Section Component
@@ -56,23 +12,15 @@ interface YouTubePlayer {
  * Displays a featured YouTube video with:
  * - Autoplay (muted by default - browser requirement)
  * - Custom unmute button overlay
- * - Play/pause controls
  * - Fullscreen support
- * - Lazy loading (only loads when in viewport)
  * - Responsive 16:9 aspect ratio
  */
 export function DocumentarySection() {
   const { settings, isLoading } = useDocumentary();
   const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [playerReady, setPlayerReady] = useState(false);
-  const [showPlayOverlay, setShowPlayOverlay] = useState(true);
-  const [apiLoaded, setApiLoaded] = useState(false);
-
+  const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<YouTubePlayer | null>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Background theme styles
   const backgroundStyles = {
@@ -93,163 +41,69 @@ export function DocumentarySection() {
     green: "text-white/90",
   };
 
-  // Load YouTube IFrame API
+  // Intersection observer to lazy load the video
   useEffect(() => {
-    if (!settings.youtubeVideoId || !isInView) return;
-
-    // Check if API is already loaded
-    if (window.YT && window.YT.Player) {
-      setApiLoaded(true);
-      return;
-    }
-
-    // Load the API
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    if (firstScriptTag && firstScriptTag.parentNode) {
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    } else {
-      document.head.appendChild(tag);
-    }
-
-    window.onYouTubeIframeAPIReady = () => {
-      setApiLoaded(true);
-    };
-
-    return () => {
-      // Cleanup
-      window.onYouTubeIframeAPIReady = () => {};
-    };
-  }, [settings.youtubeVideoId, isInView]);
-
-  // Initialize YouTube Player when API is ready
-  useEffect(() => {
-    if (!apiLoaded || !settings.youtubeVideoId || !isInView) return;
-
-    // Small delay to ensure container is ready
-    const timer = setTimeout(() => {
-      if (!document.getElementById("youtube-player")) return;
-
-      try {
-        playerRef.current = new window.YT.Player("youtube-player", {
-          videoId: settings.youtubeVideoId,
-          playerVars: {
-            autoplay: 1,
-            mute: 1,
-            controls: settings.showControls ? 1 : 0,
-            modestbranding: 1,
-            rel: 0,
-            loop: settings.loop ? 1 : 0,
-            playlist: settings.loop ? settings.youtubeVideoId : undefined,
-            playsinline: 1,
-            enablejsapi: 1,
-            origin: typeof window !== "undefined" ? window.location.origin : "",
-          },
-          events: {
-            onReady: (event: { target: YouTubePlayer }) => {
-              setPlayerReady(true);
-              setIsPlaying(true);
-              setShowPlayOverlay(false);
-              event.target.mute();
-            },
-            onStateChange: (event: { data: number }) => {
-              // YT.PlayerState.PLAYING = 1, PAUSED = 2, ENDED = 0
-              setIsPlaying(event.data === 1);
-              if (event.data === 1) {
-                setShowPlayOverlay(false);
-              }
-            },
-          },
-        }) as YouTubePlayer;
-      } catch (err) {
-        console.error("Error initializing YouTube player:", err);
-      }
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      if (playerRef.current) {
-        try {
-          playerRef.current.destroy();
-        } catch (e) {
-          // Ignore destroy errors
-        }
-        playerRef.current = null;
-      }
-    };
-  }, [apiLoaded, settings.youtubeVideoId, settings.showControls, settings.loop, isInView]);
-
-  // Toggle mute
-  const toggleMute = useCallback(() => {
-    if (!playerRef.current || !playerReady) return;
-
-    try {
-      if (isMuted) {
-        playerRef.current.unMute();
-        playerRef.current.setVolume(100);
-        setIsMuted(false);
-      } else {
-        playerRef.current.mute();
-        setIsMuted(true);
-      }
-    } catch (err) {
-      console.error("Error toggling mute:", err);
-    }
-  }, [isMuted, playerReady]);
-
-  // Toggle play/pause
-  const togglePlay = useCallback(() => {
-    if (!playerRef.current || !playerReady) return;
-
-    try {
-      if (isPlaying) {
-        playerRef.current.pauseVideo();
-      } else {
-        playerRef.current.playVideo();
-      }
-    } catch (err) {
-      console.error("Error toggling play:", err);
-    }
-  }, [isPlaying, playerReady]);
-
-  // Toggle fullscreen
-  const toggleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
 
-    if (!isFullscreen) {
-      if (containerRef.current.requestFullscreen) {
-        containerRef.current.requestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
-  }, [isFullscreen]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "100px" }
+    );
 
-  // Listen for fullscreen changes
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+    observer.observe(containerRef.current);
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
+    return () => observer.disconnect();
   }, []);
 
-  // Don't render if disabled or no video ID
+  // Toggle mute by reloading iframe with different mute parameter
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  // Open fullscreen
+  const openFullscreen = () => {
+    if (iframeRef.current) {
+      if (iframeRef.current.requestFullscreen) {
+        iframeRef.current.requestFullscreen();
+      }
+    }
+  };
+
+  // Don't render if loading
   if (isLoading) {
     return null;
   }
 
+  // Don't render if disabled or no video ID
   if (!settings.isEnabled || !settings.youtubeVideoId) {
     return null;
   }
 
   const bgTheme = settings.sectionBackground || "dark";
+  const videoId = settings.youtubeVideoId;
+
+  // Build YouTube embed URL with parameters
+  const buildYouTubeUrl = (muted: boolean) => {
+    const params = new URLSearchParams({
+      autoplay: "1",
+      mute: muted ? "1" : "0",
+      controls: settings.showControls ? "1" : "0",
+      modestbranding: "1",
+      rel: "0",
+      playsinline: "1",
+      loop: settings.loop ? "1" : "0",
+      ...(settings.loop && { playlist: videoId }),
+    });
+
+    return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+  };
 
   return (
     <section
@@ -296,16 +150,19 @@ export function DocumentarySection() {
         >
           {/* 16:9 Aspect Ratio Container */}
           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-            {/* YouTube Player Container */}
-            {isInView && (
-              <div
-                id="youtube-player"
+            {/* YouTube Iframe */}
+            {isVisible ? (
+              <iframe
+                ref={iframeRef}
+                key={isMuted ? "muted" : "unmuted"}
+                src={buildYouTubeUrl(isMuted)}
+                title={settings.title}
                 className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                loading="lazy"
               />
-            )}
-
-            {/* Placeholder before player loads */}
-            {!playerReady && (
+            ) : (
               <div className="absolute inset-0 bg-neutral-800 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-16 h-16 border-4 border-white/20 border-t-cashew-green rounded-full animate-spin mb-4 mx-auto" />
@@ -315,57 +172,20 @@ export function DocumentarySection() {
             )}
 
             {/* Custom Controls Overlay */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Play Overlay (shows before first interaction) */}
-              {showPlayOverlay && playerReady && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-auto cursor-pointer"
-                  onClick={() => {
-                    setShowPlayOverlay(false);
-                    togglePlay();
-                  }}
-                >
-                  <div className="w-20 h-20 bg-cashew-green rounded-full flex items-center justify-center shadow-lg hover:bg-cashew-dark-green transition-colors">
-                    <Play className="w-8 h-8 text-white ml-1" fill="white" />
-                  </div>
-                </motion.button>
-              )}
-
-              {/* Bottom Controls Bar */}
-              {playerReady && !showPlayOverlay && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent pointer-events-auto"
-                >
+            {isVisible && (
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Bottom Controls Bar */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent pointer-events-auto">
                   <div className="flex items-center justify-between max-w-4xl mx-auto">
                     {/* Left Controls */}
                     <div className="flex items-center gap-3">
-                      {/* Play/Pause Button */}
-                      <button
-                        onClick={togglePlay}
-                        className="w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
-                        aria-label={isPlaying ? "Pause" : "Play"}
-                      >
-                        {isPlaying ? (
-                          <div className="flex gap-1">
-                            <div className="w-1 h-4 bg-white rounded-full" />
-                            <div className="w-1 h-4 bg-white rounded-full" />
-                          </div>
-                        ) : (
-                          <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
-                        )}
-                      </button>
-
                       {/* Mute/Unmute Button */}
                       <button
                         onClick={toggleMute}
                         className={cn(
-                          "flex items-center gap-2 px-4 py-2 rounded-full transition-all",
+                          "flex items-center gap-2 px-4 py-2.5 rounded-full transition-all font-medium",
                           isMuted
-                            ? "bg-cashew-green hover:bg-cashew-dark-green text-white"
+                            ? "bg-cashew-green hover:bg-cashew-dark-green text-white shadow-lg"
                             : "bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white"
                         )}
                         aria-label={isMuted ? "Unmute" : "Mute"}
@@ -373,12 +193,12 @@ export function DocumentarySection() {
                         {isMuted ? (
                           <>
                             <VolumeX className="w-5 h-5" />
-                            <span className="text-sm font-medium">Click to Unmute</span>
+                            <span className="text-sm">Click to Unmute</span>
                           </>
                         ) : (
                           <>
                             <Volume2 className="w-5 h-5" />
-                            <span className="text-sm font-medium">Sound On</span>
+                            <span className="text-sm">Sound On</span>
                           </>
                         )}
                       </button>
@@ -388,40 +208,60 @@ export function DocumentarySection() {
                     <div className="flex items-center gap-3">
                       {/* Fullscreen Button */}
                       <button
-                        onClick={toggleFullscreen}
+                        onClick={openFullscreen}
                         className="w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors"
-                        aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+                        aria-label="Fullscreen"
                       >
-                        {isFullscreen ? (
-                          <Minimize2 className="w-5 h-5 text-white" />
-                        ) : (
-                          <Maximize2 className="w-5 h-5 text-white" />
-                        )}
+                        <Maximize2 className="w-5 h-5 text-white" />
                       </button>
                     </div>
                   </div>
-                </motion.div>
-              )}
+                </div>
 
-              {/* Unmute Prompt (top right) */}
-              {playerReady && isMuted && !showPlayOverlay && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1 }}
-                  className="absolute top-4 right-4 pointer-events-auto"
-                >
-                  <button
-                    onClick={toggleMute}
-                    className="flex items-center gap-2 px-4 py-2 bg-cashew-green hover:bg-cashew-dark-green text-white rounded-full shadow-lg transition-colors animate-pulse"
+                {/* Unmute Prompt (top right) - only show when muted */}
+                {isMuted && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 2 }}
+                    className="absolute top-4 right-4 pointer-events-auto"
                   >
-                    <VolumeX className="w-5 h-5" />
-                    <span className="text-sm font-medium">Tap to Unmute</span>
-                  </button>
-                </motion.div>
-              )}
-            </div>
+                    <button
+                      onClick={toggleMute}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-cashew-green hover:bg-cashew-dark-green text-white rounded-full shadow-lg transition-colors"
+                    >
+                      <VolumeX className="w-5 h-5" />
+                      <span className="text-sm font-medium">Tap to Unmute</span>
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            )}
           </div>
+        </motion.div>
+
+        {/* Watch on YouTube link */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-6"
+        >
+          <a
+            href={`https://www.youtube.com/watch?v=${videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "inline-flex items-center gap-2 text-sm hover:underline",
+              bgTheme === "light" ? "text-neutral-500" : "text-white/60 hover:text-white/80"
+            )}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            Watch on YouTube
+          </a>
         </motion.div>
       </div>
     </section>
