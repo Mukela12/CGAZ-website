@@ -120,7 +120,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               type: 'ui',
               admin: {
                 components: {
-                  Field: '/payload/components/UploadInstructions',
+                  Field: '@/payload/components/UploadInstructions',
                 },
               },
             },
