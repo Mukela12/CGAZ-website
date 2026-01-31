@@ -50,7 +50,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               type: 'text',
               label: 'YouTube Video ID',
               admin: {
-                description: 'Enter the YouTube video ID (e.g., dQw4w9WgXcQ). See the "How to Upload" tab for instructions.',
+                description: 'Enter the YouTube video ID (e.g., dQw4w9WgXcQ). Find it in the YouTube URL after "v=" or "youtu.be/"',
               },
             },
             {
@@ -108,20 +108,6 @@ export const FeaturedDocumentary: GlobalConfig = {
               ],
               admin: {
                 description: 'Background color theme for the documentary section',
-              },
-            },
-          ],
-        },
-        {
-          label: 'How to Upload',
-          fields: [
-            {
-              name: 'uploadInstructions',
-              type: 'ui',
-              admin: {
-                components: {
-                  Field: '@/payload/components/UploadInstructions',
-                },
               },
             },
           ],
