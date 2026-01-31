@@ -333,3 +333,40 @@ export async function getFeaturedContent() {
     stories,
   }
 }
+
+/**
+ * Documentary Settings interface
+ */
+export interface DocumentarySettings {
+  isEnabled: boolean
+  title: string
+  subtitle: string
+  youtubeVideoId: string
+  showControls: boolean
+  loop: boolean
+  sectionBackground: 'dark' | 'light' | 'green'
+}
+
+/**
+ * Fetch documentary settings from global configuration
+ * @returns Documentary settings or null if not configured
+ */
+export async function getDocumentarySettings(): Promise<DocumentarySettings | null> {
+  const payload = await getPayloadClient()
+  try {
+    const documentary = await payload.findGlobal({
+      slug: 'featured-documentary',
+    })
+    return {
+      isEnabled: documentary?.isEnabled ?? false,
+      title: documentary?.title ?? 'Our Story',
+      subtitle: documentary?.subtitle ?? '',
+      youtubeVideoId: documentary?.youtubeVideoId ?? '',
+      showControls: documentary?.showControls ?? true,
+      loop: documentary?.loop ?? false,
+      sectionBackground: documentary?.sectionBackground ?? 'dark',
+    }
+  } catch {
+    return null
+  }
+}
