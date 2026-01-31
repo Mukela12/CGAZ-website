@@ -1,11 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import path from 'path'
-
-// Lazy import cloudinary to avoid issues with env variables during build/seed
-function getCloudinary() {
-  const cloudinaryModule = require('@/lib/cloudinary')
-  return cloudinaryModule.default
-}
+import { uploadToCloudinaryFromBuffer, deleteFromCloudinary } from '@/lib/cloudinary'
 
 export const Resources: CollectionConfig = {
   slug: 'resources',
@@ -18,7 +13,8 @@ export const Resources: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    staticDir: 'public/resources',
+    // Disable local storage - we upload directly to Cloudinary
+    disableLocalStorage: true,
     mimeTypes: [
       'application/pdf',
       'application/msword',
@@ -191,76 +187,47 @@ export const Resources: CollectionConfig = {
           }
         }
 
-        return data
-      },
-    ],
-    afterChange: [
-      async ({ doc, req, operation }) => {
-        // Upload to Cloudinary on create - scheduled after transaction commits
-        if (operation === 'create' && doc.filename) {
-          const docId = doc.id
-          const filename = doc.filename
-          const filePath = path.join(process.cwd(), 'public/resources', filename)
+        // Upload to Cloudinary on create
+        if (operation === 'create' && req.file) {
+          const file = req.file
+          const filename = file.name || 'upload'
+          const publicId = path.parse(filename).name
 
-          // Schedule upload AFTER the database transaction commits
-          // Using setImmediate to run after current event loop
-          setImmediate(async () => {
-            // Additional delay to ensure transaction is fully committed
-            await new Promise(resolve => setTimeout(resolve, 500))
+          try {
+            // Get the file buffer
+            const buffer = file.data as Buffer
 
-            let uploadResult = null
-            let lastError = null
-
-            // Retry logic: 3 attempts with 1 second delay between retries
-            for (let attempt = 1; attempt <= 3; attempt++) {
-              try {
-                const cloudinary = getCloudinary()
-                uploadResult = await cloudinary.uploader.upload(filePath, {
-                  folder: 'CGAZ-RESOURCES',
-                  public_id: path.parse(filename).name,
-                  resource_type: 'auto', // Auto-detect resource type
-                  overwrite: false,
-                })
-                console.log(`✓ Resource uploaded to Cloudinary: ${uploadResult.public_id}`)
-                break // Success, exit retry loop
-              } catch (error) {
-                lastError = error
-                console.error(`✗ Cloudinary upload attempt ${attempt}/3 failed:`, error)
-                if (attempt < 3) {
-                  // Wait 1 second before retrying
-                  await new Promise(resolve => setTimeout(resolve, 1000))
-                }
-              }
+            if (!buffer || buffer.length === 0) {
+              console.error('No file buffer available for upload')
+              return data
             }
 
-            if (uploadResult) {
-              // Update document with Cloudinary URL using fresh Payload instance
-              // Import getPayload dynamically to avoid circular dependencies
-              try {
-                const { getPayload } = await import('payload')
-                const payload = await getPayload({ config: (await import('@/payload.config')).default })
+            console.log(`Uploading resource ${filename} to Cloudinary...`)
 
-                await payload.update({
-                  collection: 'resources',
-                  id: docId,
-                  data: {
-                    cloudinaryUrl: uploadResult.secure_url,
-                    cloudinaryPublicId: uploadResult.public_id,
-                  },
-                })
-                console.log(`✓ Resource ${docId} updated with Cloudinary URL: ${uploadResult.secure_url}`)
-              } catch (updateError: any) {
-                console.error(`✗ Failed to update resource ${docId} with Cloudinary URL:`, updateError?.message || updateError)
-                console.error(`Cloudinary URL for manual recovery: ${uploadResult.secure_url}`)
-              }
-            } else {
-              // All retries failed - log for manual intervention
-              console.error(`✗ All Cloudinary upload attempts failed for resource ${docId}`)
-              console.error(`Last error: ${lastError?.message || 'Unknown error'}`)
-            }
-          })
+            const uploadResult = await uploadToCloudinaryFromBuffer(buffer, {
+              folder: 'CGAZ-RESOURCES',
+              publicId: publicId,
+              resourceType: 'raw', // Use 'raw' for non-image files (PDFs, docs, etc.)
+              overwrite: false,
+            })
+
+            console.log(`✓ Resource uploaded to Cloudinary: ${uploadResult.public_id}`)
+
+            // Set Cloudinary URLs in the document data
+            data.cloudinaryUrl = uploadResult.secure_url
+            data.cloudinaryPublicId = uploadResult.public_id
+
+            // Also set the URL field that Payload uses for display
+            data.url = uploadResult.secure_url
+
+          } catch (error: any) {
+            console.error('✗ Cloudinary upload failed:', error?.message || error)
+            // Don't throw - allow the upload to proceed without Cloudinary
+            // The admin can retry later
+          }
         }
-        return doc
+
+        return data
       },
     ],
     afterDelete: [
@@ -268,10 +235,8 @@ export const Resources: CollectionConfig = {
         // Delete from Cloudinary when resource is deleted
         if (doc.cloudinaryPublicId) {
           try {
-            const cloudinary = getCloudinary()
-            await cloudinary.uploader.destroy(doc.cloudinaryPublicId, {
-              resource_type: 'raw', // For non-image files
-            })
+            await deleteFromCloudinary(doc.cloudinaryPublicId, 'raw')
+            console.log(`✓ Deleted from Cloudinary: ${doc.cloudinaryPublicId}`)
           } catch (error) {
             console.error('Error deleting resource from Cloudinary:', error)
           }

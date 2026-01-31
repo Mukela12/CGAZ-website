@@ -1,11 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import path from 'path'
-
-// Lazy import cloudinary to avoid issues with env variables during build/seed
-function getCloudinary() {
-  const cloudinaryModule = require('@/lib/cloudinary')
-  return cloudinaryModule.default
-}
+import { uploadToCloudinaryFromBuffer, deleteFromCloudinary } from '@/lib/cloudinary'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -17,7 +12,8 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    staticDir: 'public/media',
+    // Disable local storage - we upload directly to Cloudinary
+    disableLocalStorage: true,
     imageSizes: [
       {
         name: 'thumbnail',
@@ -102,59 +98,49 @@ export const Media: CollectionConfig = {
     },
   ],
   hooks: {
-    afterChange: [
-      async ({ doc, req, operation }) => {
-        // Only upload to Cloudinary on create operations
-        if (operation === 'create' && doc.filename) {
-          const filePath = path.join(process.cwd(), 'public/media', doc.filename)
-          let uploadResult = null
-          let lastError = null
+    beforeChange: [
+      async ({ data, req, operation }) => {
+        // Upload to Cloudinary on create
+        if (operation === 'create' && req.file) {
+          const file = req.file
+          const filename = file.name || 'upload'
+          const publicId = path.parse(filename).name
 
-          // Retry logic: 3 attempts with 1 second delay between retries
-          for (let attempt = 1; attempt <= 3; attempt++) {
-            try {
-              const cloudinary = getCloudinary()
-              uploadResult = await cloudinary.uploader.upload(filePath, {
-                folder: 'CGAZ-IMAGES',
-                public_id: path.parse(doc.filename).name,
-                overwrite: false,
-              })
-              console.log(`✓ Media uploaded to Cloudinary: ${uploadResult.public_id}`)
-              break // Success, exit retry loop
-            } catch (error) {
-              lastError = error
-              console.error(`✗ Cloudinary upload attempt ${attempt}/3 failed:`, error)
-              if (attempt < 3) {
-                // Wait 1 second before retrying
-                await new Promise(resolve => setTimeout(resolve, 1000))
-              }
-            }
-          }
+          try {
+            // Get the file buffer
+            const buffer = file.data as Buffer
 
-          if (uploadResult) {
-            // Update document with Cloudinary URL
-            try {
-              await req.payload.update({
-                collection: 'media',
-                id: doc.id,
-                data: {
-                  cloudinaryUrl: uploadResult.secure_url,
-                  cloudinaryPublicId: uploadResult.public_id,
-                },
-              })
-            } catch (updateError) {
-              console.error('Failed to update media with Cloudinary URL:', updateError)
+            if (!buffer || buffer.length === 0) {
+              console.error('No file buffer available for upload')
+              return data
             }
-          } else {
-            // All retries failed - log warning but don't fail the upload
-            // The local file is still saved and usable
-            console.warn(
-              `⚠ Cloudinary upload failed for media ${doc.id} after 3 attempts. ` +
-              `File saved locally only. Error: ${lastError?.message || 'Unknown'}`
-            )
+
+            console.log(`Uploading ${filename} to Cloudinary...`)
+
+            const uploadResult = await uploadToCloudinaryFromBuffer(buffer, {
+              folder: 'CGAZ-IMAGES',
+              publicId: publicId,
+              resourceType: 'image',
+              overwrite: false,
+            })
+
+            console.log(`✓ Media uploaded to Cloudinary: ${uploadResult.public_id}`)
+
+            // Set Cloudinary URLs in the document data
+            data.cloudinaryUrl = uploadResult.secure_url
+            data.cloudinaryPublicId = uploadResult.public_id
+
+            // Also set the URL field that Payload uses for display
+            data.url = uploadResult.secure_url
+
+          } catch (error: any) {
+            console.error('✗ Cloudinary upload failed:', error?.message || error)
+            // Don't throw - allow the upload to proceed without Cloudinary
+            // The admin can retry later
           }
         }
-        return doc
+
+        return data
       },
     ],
     afterDelete: [
@@ -162,8 +148,8 @@ export const Media: CollectionConfig = {
         // Delete from Cloudinary when media is deleted
         if (doc.cloudinaryPublicId) {
           try {
-            const cloudinary = getCloudinary()
-            await cloudinary.uploader.destroy(doc.cloudinaryPublicId)
+            await deleteFromCloudinary(doc.cloudinaryPublicId, 'image')
+            console.log(`✓ Deleted from Cloudinary: ${doc.cloudinaryPublicId}`)
           } catch (error) {
             console.error('Error deleting from Cloudinary:', error)
           }
