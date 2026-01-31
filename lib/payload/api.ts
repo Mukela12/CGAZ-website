@@ -370,3 +370,90 @@ export async function getDocumentarySettings(): Promise<DocumentarySettings | nu
     return null
   }
 }
+
+/**
+ * Homepage Slideshow Slide interface
+ */
+export interface SlideshowSlide {
+  image: string
+  alt: string
+  caption?: string
+}
+
+/**
+ * Homepage Slideshow Settings interface
+ */
+export interface HomepageSlideshowSettings {
+  slides: SlideshowSlide[]
+  autoPlayInterval: number
+}
+
+/**
+ * Default slideshow images (fallback when CMS is empty)
+ */
+const defaultSlides: SlideshowSlide[] = [
+  {
+    image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/FormerRepublicanPresidentH.EEdgar.LunguandGenderMinisterProfessorNandiLuoAdmiresProcessedCashewNutsAtTheCGAZStandDuringTheWomenEmpowermentExhibition34_qifhjq.jpg",
+    alt: "Former Republican President H.E Edgar Lungu and Gender Minister Professor Nandi Luo admires processed cashew nuts at CGAZ stand",
+  },
+  {
+    image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg",
+    alt: "Cashew Master Trainers at a training session in Limulunga District",
+  },
+  {
+    image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379300/Officiallaunchofthe2025_26cashewseedlingdistributionbyCGAZ22_mhtksl.jpg",
+    alt: "Official launch of 2025-26 cashew seedling distribution by CGAZ",
+  },
+  {
+    image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379305/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg",
+    alt: "Women working in a cashew processing factory in Mongu",
+  },
+  {
+    image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg",
+    alt: "Participants at the National Cashew Consultative Forum",
+  },
+]
+
+/**
+ * Fetch homepage slideshow settings from global configuration
+ * @returns Homepage slideshow settings with slides array
+ */
+export async function getHomepageSlideshowSettings(): Promise<HomepageSlideshowSettings> {
+  const payload = await getPayloadClient()
+  try {
+    const slideshow = await payload.findGlobal({
+      slug: 'homepage-slideshow',
+      depth: 2, // Include media relations
+    })
+
+    // Transform CMS slides to the format expected by the component
+    const slides: SlideshowSlide[] = []
+
+    if (slideshow?.slides && Array.isArray(slideshow.slides)) {
+      for (const slide of slideshow.slides) {
+        if (slide.image) {
+          const media = typeof slide.image === 'object' ? slide.image : null
+          if (media) {
+            slides.push({
+              image: media.cloudinaryUrl || media.url || '',
+              alt: slide.altText || media.alt || 'CGAZ slideshow image',
+              caption: slide.caption || undefined,
+            })
+          }
+        }
+      }
+    }
+
+    // Return CMS slides if available, otherwise use defaults
+    return {
+      slides: slides.length > 0 ? slides : defaultSlides,
+      autoPlayInterval: slideshow?.autoPlayInterval ?? 5000,
+    }
+  } catch (error) {
+    console.error('Error fetching slideshow settings:', error)
+    return {
+      slides: defaultSlides,
+      autoPlayInterval: 5000,
+    }
+  }
+}

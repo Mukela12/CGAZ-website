@@ -22,6 +22,7 @@ import { NewsletterSubscribers } from './payload/collections/NewsletterSubscribe
 import { SiteMetrics } from './payload/globals/SiteMetrics'
 import { PaymentSettings } from './payload/globals/PaymentSettings'
 import { FeaturedDocumentary } from './payload/globals/FeaturedDocumentary'
+import { HomepageSlideshow } from './payload/globals/HomepageSlideshow'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -62,6 +63,7 @@ export default buildConfig({
     SiteMetrics,
     PaymentSettings,
     FeaturedDocumentary,
+    HomepageSlideshow,
   ],
 
   // Database

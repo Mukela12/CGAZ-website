@@ -11,13 +11,14 @@ import { Button } from "@/components/shared/Button";
 import { OptimizedImage } from "@/components/shared/OptimizedImage";
 import { Users, MapPin, Sprout, TrendingUp, ArrowRight } from "lucide-react";
 import { useSiteMetrics } from "@/lib/hooks/useSiteMetrics";
-import type { DocumentarySettings } from "@/lib/payload/api";
+import type { DocumentarySettings, HomepageSlideshowSettings } from "@/lib/payload/api";
 
 interface HomePageClientProps {
   documentarySettings: DocumentarySettings | null;
+  slideshowSettings: HomepageSlideshowSettings;
 }
 
-export default function HomePageClient({ documentarySettings }: HomePageClientProps) {
+export default function HomePageClient({ documentarySettings, slideshowSettings }: HomePageClientProps) {
   // Fetch dynamic site metrics
   const { metrics } = useSiteMetrics();
 
@@ -53,57 +54,8 @@ export default function HomePageClient({ documentarySettings }: HomePageClientPr
     },
   ];
 
-  // Hero slideshow images showcasing CGAZ's work
-  const heroSlides = [
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/FormerRepublicanPresidentH.EEdgar.LunguandGenderMinisterProfessorNandiLuoAdmiresProcessedCashewNutsAtTheCGAZStandDuringTheWomenEmpowermentExhibition34_qifhjq.jpg",
-      alt: "Former Republican President H.E Edgar Lungu and Gender Minister Professor Nandi Luo admires processed cashew nuts at CGAZ stand",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379308/CashewMasterTrainers_MTPGraduates_AtaTrainingSessioninLimulungaDistrict3_qp5iug.jpg",
-      alt: "Cashew Master Trainers at a training session in Limulunga District",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379300/Officiallaunchofthe2025_26cashewseedlingdistributionbyCGAZ22_mhtksl.jpg",
-      alt: "Official launch of 2025-26 cashew seedling distribution by CGAZ",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379305/WomenWorkingInACashewProcessingFactoryInMongu19_orkqwl.jpg",
-      alt: "Women working in a cashew processing factory in Mongu",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/ParticipantsAtTheNationalCashewConsultativeForumOnTheNationalCashewDevelopmentStrategy_NCDS_OrganisedByCGAZAndTheAgriculturalConsultativeForum_ACF_6_katljk.jpg",
-      alt: "Participants at the National Cashew Consultative Forum",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/Womenbeneficiariesatthelaunchofthe2025_26cashewseedlingdistribution26_rkynef.jpg",
-      alt: "Women beneficiaries at the launch of 2025-26 seedling distribution",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379299/Sun-dryingofrawcashews_kfdmyc.jpg",
-      alt: "Sun-drying of raw cashews",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379295/Cashew-Nursery11_ujzxc6.jpg",
-      alt: "CGAZ cashew nursery",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/DistributionOfImprovedCashewPlantingMaterials_gvrekg.jpg",
-      alt: "Distribution of improved cashew planting materials",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/Graftingofcashewseedlings_qj0ken.jpg",
-      alt: "Grafting of cashew seedlings - propagation technique",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379302/PromotingSmallScaleCashewprocessing_rvgssn.jpg",
-      alt: "Promoting small scale cashew processing",
-    },
-    {
-      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379298/DistributionOfImprovedCashewPlantingMaterials-infront-of-CGAZ-poster_kkspl4.jpg",
-      alt: "Distribution of improved cashew planting materials at CGAZ event",
-    }
-  ];
+  // Hero slideshow images from CMS
+  const heroSlides = slideshowSettings.slides;
 
   return (
     <div className="min-h-screen">
@@ -113,7 +65,7 @@ export default function HomePageClient({ documentarySettings }: HomePageClientPr
         subtitle="Supporting 22,490 farmers across 145 centers with sustainable agricultural practices, quality training, and market access opportunities."
         height="large"
         slides={heroSlides}
-        autoPlayInterval={5000}
+        autoPlayInterval={slideshowSettings.autoPlayInterval}
         primaryCta={{
           label: "Learn More",
           href: "/about",
