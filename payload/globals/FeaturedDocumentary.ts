@@ -112,6 +112,88 @@ export const FeaturedDocumentary: GlobalConfig = {
             },
           ],
         },
+        {
+          label: 'How to Upload',
+          description: 'Step-by-step guide for adding a YouTube video',
+          fields: [
+            {
+              name: 'step1',
+              type: 'collapsible',
+              label: 'Step 1: Upload Video to YouTube',
+              admin: {
+                initCollapsed: false,
+              },
+              fields: [
+                {
+                  name: 'step1Instructions',
+                  type: 'ui',
+                  admin: {
+                    components: {
+                      Field: '/payload/components/Step1Instructions',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              name: 'step2',
+              type: 'collapsible',
+              label: 'Step 2: Get the Video ID',
+              admin: {
+                initCollapsed: false,
+              },
+              fields: [
+                {
+                  name: 'step2Instructions',
+                  type: 'ui',
+                  admin: {
+                    components: {
+                      Field: '/payload/components/Step2Instructions',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              name: 'step3',
+              type: 'collapsible',
+              label: 'Step 3: Add to Website',
+              admin: {
+                initCollapsed: false,
+              },
+              fields: [
+                {
+                  name: 'step3Instructions',
+                  type: 'ui',
+                  admin: {
+                    components: {
+                      Field: '/payload/components/Step3Instructions',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              name: 'tips',
+              type: 'collapsible',
+              label: 'Tips & Best Practices',
+              admin: {
+                initCollapsed: true,
+              },
+              fields: [
+                {
+                  name: 'tipsContent',
+                  type: 'ui',
+                  admin: {
+                    components: {
+                      Field: '/payload/components/TipsContent',
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
   ],
