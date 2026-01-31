@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { HeroSlideshow } from "@/components/shared/HeroSlideshow";
+import { DocumentarySection } from "@/components/shared/DocumentarySection";
 import { Stats } from "@/components/shared/Stats";
 import { Footer } from "@/components/shared/Footer";
 import { GlassCard } from "@/components/shared/GlassCard";
@@ -84,6 +85,18 @@ export default function Home() {
     {
       image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379297/DistributionOfImprovedCashewPlantingMaterials_gvrekg.jpg",
       alt: "Distribution of improved cashew planting materials",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379296/Graftingofcashewseedlings_qj0ken.jpg",
+      alt: "Grafting of cashew seedlings - propagation technique",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379302/PromotingSmallScaleCashewprocessing_rvgssn.jpg",
+      alt: "Promoting small scale cashew processing",
+    },
+    {
+      image: "https://res.cloudinary.com/dvj7ayoot/image/upload/v1768379298/DistributionOfImprovedCashewPlantingMaterials-infront-of-CGAZ-poster_kkspl4.jpg",
+      alt: "Distribution of improved cashew planting materials at CGAZ event",
     }
   ];
 
@@ -105,6 +118,9 @@ export default function Home() {
           href: "/farmers/join",
         }}
       />
+
+      {/* Documentary Video Section */}
+      <DocumentarySection />
 
       {/* Stats Section */}
       <Stats

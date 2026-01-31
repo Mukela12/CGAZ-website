@@ -92,7 +92,7 @@ The CGAZ website serves multiple audiences with distinct needs:
 
 ### Backend/CMS Layer (Phase 3)
 
-**CMS: Payload CMS 3.0**
+**CMS: let CMS 3.0**
 - **Why Payload?**
   - Native Next.js integration
   - TypeScript-first
