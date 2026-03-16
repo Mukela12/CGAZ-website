@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/payload/api";
 import { Footer } from "@/components/shared/Footer";
 import { Calendar, User, ArrowLeft, Tag } from "lucide-react";
@@ -170,8 +171,21 @@ export default async function BlogPostPage({
           {/* Featured Image */}
           {post.featuredImage && (
             <div className="mb-12">
-              <div className="aspect-video bg-neutral-200 rounded-lg flex items-center justify-center">
-                <p className="text-neutral-400">Featured Image</p>
+              <div className="aspect-video bg-neutral-200 rounded-lg overflow-hidden relative">
+                {(typeof post.featuredImage === "object" && (post.featuredImage.cloudinaryUrl || post.featuredImage.url)) ? (
+                  <Image
+                    src={post.featuredImage.cloudinaryUrl || post.featuredImage.url}
+                    alt={post.featuredImage.alt || post.title}
+                    fill
+                    className="object-cover rounded-lg"
+                    sizes="(max-width: 768px) 100vw, 800px"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <p className="text-neutral-400">Featured Image</p>
+                  </div>
+                )}
               </div>
             </div>
           )}

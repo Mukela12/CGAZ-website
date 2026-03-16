@@ -1,6 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { GlassCard } from "@/components/shared/GlassCard";
 import { Calendar, User, ArrowRight, Tag } from "lucide-react";
+
+function getImageUrl(featuredImage: any): string | null {
+  if (!featuredImage || typeof featuredImage !== "object") return null;
+  return featuredImage.cloudinaryUrl || featuredImage.url || null;
+}
 
 interface NewsListProps {
   posts: any[];
@@ -79,10 +85,22 @@ export function NewsList({ posts }: NewsListProps) {
                 className="p-8 lg:p-12 bg-white hover:shadow-2xl transition-all duration-300"
               >
                 <div className="flex flex-col lg:flex-row gap-8">
-                  {/* Image Placeholder */}
+                  {/* Featured Image */}
                   <div className="lg:w-1/2">
-                    <div className="aspect-video bg-neutral-200 rounded-lg flex items-center justify-center">
-                      <p className="text-neutral-400">Featured Image</p>
+                    <div className="aspect-video bg-neutral-200 rounded-lg overflow-hidden relative">
+                      {getImageUrl(featuredPost.featuredImage) ? (
+                        <Image
+                          src={getImageUrl(featuredPost.featuredImage)!}
+                          alt={typeof featuredPost.featuredImage === "object" ? featuredPost.featuredImage.alt || featuredPost.title : featuredPost.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <p className="text-neutral-400">Featured Image</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -169,9 +187,21 @@ export function NewsList({ posts }: NewsListProps) {
                       hoverable
                       className="h-full bg-white border border-neutral-200 hover:border-cashew-green hover:shadow-xl transition-all duration-300"
                     >
-                      {/* Image Placeholder */}
-                      <div className="aspect-video bg-neutral-200 flex items-center justify-center">
-                        <p className="text-neutral-400 text-sm">Article Image</p>
+                      {/* Article Image */}
+                      <div className="aspect-video bg-neutral-200 relative overflow-hidden">
+                        {getImageUrl(post.featuredImage) ? (
+                          <Image
+                            src={getImageUrl(post.featuredImage)!}
+                            alt={typeof post.featuredImage === "object" ? post.featuredImage.alt || post.title : post.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <p className="text-neutral-400 text-sm">Article Image</p>
+                          </div>
+                        )}
                       </div>
 
                       <div className="p-6">
