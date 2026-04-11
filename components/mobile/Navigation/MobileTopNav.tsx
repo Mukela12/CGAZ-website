@@ -13,6 +13,7 @@ import {
   FolderTree,
   Package,
   Newspaper,
+  PlayCircle,
   Phone,
   Mail,
   MapPin,
@@ -80,6 +81,12 @@ const navItems: NavItem[] = [
     label: "News & Events",
     href: "/news",
     icon: Newspaper,
+  },
+  {
+    id: "media",
+    label: "Media",
+    href: "/media",
+    icon: PlayCircle,
   },
 ];
 

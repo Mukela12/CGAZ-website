@@ -14,6 +14,7 @@ import { BlogPosts } from './payload/collections/BlogPosts'
 import { SuccessStories } from './payload/collections/SuccessStories'
 import { Media } from './payload/collections/Media'
 import { Resources } from './payload/collections/Resources'
+import { MediaLibrary } from './payload/collections/MediaLibrary'
 import { ContactSubmissions } from './payload/collections/ContactSubmissions'
 import { CourseRegistrations } from './payload/collections/CourseRegistrations'
 import { NewsletterSubscribers } from './payload/collections/NewsletterSubscribers'
@@ -53,6 +54,7 @@ export default buildConfig({
     SuccessStories,
     Media,
     Resources,
+    MediaLibrary,
     ContactSubmissions,
     CourseRegistrations,
     NewsletterSubscribers,

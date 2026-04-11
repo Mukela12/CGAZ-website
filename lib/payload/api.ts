@@ -372,6 +372,114 @@ export async function getDocumentarySettings(): Promise<DocumentarySettings | nu
 }
 
 /**
+ * Media Library types
+ */
+export type MediaLibraryType = 'video' | 'radio' | 'podcast'
+export type MediaLibraryLanguage =
+  | 'english'
+  | 'lozi'
+  | 'bemba'
+  | 'nyanja'
+  | 'tonga'
+  | 'mixed'
+
+export interface MediaLibraryEntry {
+  id: string
+  title: string
+  slug: string
+  type: MediaLibraryType
+  description: string
+  youtubeVideoId: string
+  customThumbnail?: { cloudinaryUrl?: string; url?: string; alt?: string } | null
+  language: MediaLibraryLanguage
+  location?: string | null
+  publishedDate: string
+  duration?: string | null
+  isFeatured: boolean
+  status: 'draft' | 'published'
+}
+
+/**
+ * Fetch Media Library entries with optional type filter.
+ * Only returns published entries for public visitors.
+ */
+export async function getMediaLibraryEntries(
+  type?: MediaLibraryType | 'all',
+  limit: number = 100,
+): Promise<MediaLibraryEntry[]> {
+  const payload = await getPayloadClient()
+
+  const where: any = { status: { equals: 'published' } }
+  if (type && type !== 'all') {
+    where.type = { equals: type }
+  }
+
+  try {
+    const { docs } = await payload.find({
+      collection: 'media-library',
+      where,
+      sort: '-publishedDate',
+      limit,
+      depth: 2,
+    })
+    return docs as MediaLibraryEntry[]
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Fetch a single Media Library entry by slug.
+ */
+export async function getMediaLibraryEntryBySlug(
+  slug: string,
+): Promise<MediaLibraryEntry | null> {
+  const payload = await getPayloadClient()
+
+  try {
+    const { docs } = await payload.find({
+      collection: 'media-library',
+      where: {
+        slug: { equals: slug },
+        status: { equals: 'published' },
+      },
+      limit: 1,
+      depth: 2,
+    })
+    return (docs[0] as MediaLibraryEntry) || null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Fetch the currently-featured video entry. Used by the homepage
+ * DocumentarySection. Returns null if nothing is featured — the caller
+ * should fall back to the FeaturedDocumentary global.
+ */
+export async function getFeaturedMediaVideo(): Promise<MediaLibraryEntry | null> {
+  const payload = await getPayloadClient()
+
+  try {
+    const { docs } = await payload.find({
+      collection: 'media-library',
+      where: {
+        and: [
+          { isFeatured: { equals: true } },
+          { type: { equals: 'video' } },
+          { status: { equals: 'published' } },
+        ],
+      },
+      limit: 1,
+      depth: 2,
+    })
+    return (docs[0] as MediaLibraryEntry) || null
+  } catch {
+    return null
+  }
+}
+
+/**
  * Homepage Slideshow Slide interface
  */
 export interface SlideshowSlide {
