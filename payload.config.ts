@@ -1,5 +1,6 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 import path from 'path'
@@ -73,6 +74,18 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/cgaz',
     },
+  }),
+
+  // Email adapter — powers Payload's built-in forgot-password, email
+  // verification, and user invitation flows. Uses Resend HTTP API so we
+  // don't need SMTP credentials. The FROM domain (fluxium.dev) must be
+  // verified in the Resend dashboard — it is, because the contact form
+  // already delivers from this address.
+  email: resendAdapter({
+    defaultFromAddress: process.env.FROM_EMAIL || 'contact@fluxium.dev',
+    defaultFromName:
+      process.env.FROM_NAME || 'Cashew Growers Association of Zambia',
+    apiKey: process.env.RESEND_API_KEY || '',
   }),
 
   // Rich text editor (Lexical - recommended for Payload 3.0)

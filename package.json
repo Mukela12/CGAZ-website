@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.71.1",
+    "@payloadcms/email-resend": "3.71.1",
     "@payloadcms/next": "^3.71.1",
     "@payloadcms/plugin-cloud-storage": "^3.71.1",
     "@payloadcms/richtext-lexical": "^3.71.1",
