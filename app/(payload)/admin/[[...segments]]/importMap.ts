@@ -1,9 +1,19 @@
 /* THIS FILE WAS GENERATED AUTOMATICALLY BY PAYLOAD. */
-/* DO NOT MODIFY IT BECAUSE IT COULD BE REWRITTEN AT ANY TIME. */
+/* Manually extended with custom admin components — `payload generate:importmap`
+ * currently can't load payload.config.ts under Node 22 ESM, so entries for
+ * project-local components are maintained by hand here.
+ */
 import '@payloadcms/next/css'
 
 // Import required Payload UI components
 import { CollectionCards } from '@payloadcms/ui/rsc'
+
+// Custom admin components (project-local)
+import AudioUploadField from '../../../../payload/components/AudioUploadField'
+import Step1Instructions from '../../../../payload/components/Step1Instructions'
+import Step2Instructions from '../../../../payload/components/Step2Instructions'
+import Step3Instructions from '../../../../payload/components/Step3Instructions'
+import TipsContent from '../../../../payload/components/TipsContent'
 
 // Import Lexical rich text components
 import { RscEntryLexicalCell, RscEntryLexicalField, LexicalDiffComponent } from '@payloadcms/richtext-lexical/rsc'
@@ -55,4 +65,10 @@ export const importMap = {
   '@payloadcms/richtext-lexical/client#UnderlineFeatureClient': UnderlineFeatureClient,
   '@payloadcms/richtext-lexical/client#BoldFeatureClient': BoldFeatureClient,
   '@payloadcms/richtext-lexical/client#ItalicFeatureClient': ItalicFeatureClient,
+  // Custom project components
+  '/payload/components/AudioUploadField#default': AudioUploadField,
+  '/payload/components/Step1Instructions#default': Step1Instructions,
+  '/payload/components/Step2Instructions#default': Step2Instructions,
+  '/payload/components/Step3Instructions#default': Step3Instructions,
+  '/payload/components/TipsContent#default': TipsContent,
 }
