@@ -25,6 +25,7 @@ import { default as default_707f56141a1d15200be4c3f17403191c } from '../../../pa
 import { default as default_dbc1098074f448dba7ffb3602b49449d } from '../../../payload/components/Step2Instructions'
 import { default as default_e5117b0189113dfd9ca3daa812687654 } from '../../../payload/components/Step3Instructions'
 import { default as default_c488410fd5d0a61b0618244bb2033200 } from '../../../payload/components/TipsContent'
+import { default as default_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 } from '../../../payload/components/AudioUploadField'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
@@ -55,5 +56,6 @@ export const importMap = {
   "/payload/components/Step2Instructions#default": default_dbc1098074f448dba7ffb3602b49449d,
   "/payload/components/Step3Instructions#default": default_e5117b0189113dfd9ca3daa812687654,
   "/payload/components/TipsContent#default": default_c488410fd5d0a61b0618244bb2033200,
+  "/payload/components/AudioUploadField#default": default_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

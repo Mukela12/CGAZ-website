@@ -372,32 +372,20 @@ export async function getDocumentarySettings(): Promise<DocumentarySettings | nu
 }
 
 /**
- * Media Library types
+ * Media Library types + resolveAudioFile helper live in a separate file
+ * (mediaLibraryTypes.ts) so they can be imported from client components
+ * without dragging in the Payload/Postgres runtime. Re-exported here for
+ * server-side callers that already import from this module.
  */
-export type MediaLibraryType = 'video' | 'radio' | 'podcast'
-export type MediaLibraryLanguage =
-  | 'english'
-  | 'lozi'
-  | 'bemba'
-  | 'nyanja'
-  | 'tonga'
-  | 'mixed'
+export type {
+  MediaLibraryType,
+  MediaLibraryLanguage,
+  AudioMediaFile,
+  MediaLibraryEntry,
+} from './mediaLibraryTypes'
+export { resolveAudioFile } from './mediaLibraryTypes'
 
-export interface MediaLibraryEntry {
-  id: string
-  title: string
-  slug: string
-  type: MediaLibraryType
-  description: string
-  youtubeVideoId: string
-  customThumbnail?: { cloudinaryUrl?: string; url?: string; alt?: string } | null
-  language: MediaLibraryLanguage
-  location?: string | null
-  publishedDate: string
-  duration?: string | null
-  isFeatured: boolean
-  status: 'draft' | 'published'
-}
+import type { MediaLibraryType, MediaLibraryEntry } from './mediaLibraryTypes'
 
 /**
  * Fetch Media Library entries with optional type filter.

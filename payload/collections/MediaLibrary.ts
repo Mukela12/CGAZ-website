@@ -23,7 +23,7 @@ export const MediaLibrary: CollectionConfig = {
     group: 'Content',
     defaultColumns: ['title', 'type', 'language', 'publishedDate', 'isFeatured', 'status'],
     description:
-      'Videos and radio programs. Paste a YouTube video ID — audio programs can be uploaded to YouTube with a still image.',
+      'Videos and radio programs. Videos use a YouTube video ID. Radio programs and podcasts upload audio files directly.',
   },
   access: {
     read: ({ req }) => {
@@ -114,7 +114,8 @@ export const MediaLibrary: CollectionConfig = {
         { label: 'Podcast', value: 'podcast' },
       ],
       admin: {
-        description: 'Used to filter the media page. Radio programs use the same YouTube workflow.',
+        description:
+          'Used to filter the media page. Videos use YouTube; radio and podcasts upload audio files directly.',
       },
     },
     {
@@ -129,11 +130,36 @@ export const MediaLibrary: CollectionConfig = {
     {
       name: 'youtubeVideoId',
       type: 'text',
-      required: true,
       label: 'YouTube Video ID',
       admin: {
         description:
-          'Paste only the ID, not the full URL. From https://youtu.be/ABC123xyz paste "ABC123xyz".',
+          'Required for Video entries. Paste only the ID, not the full URL. From https://youtu.be/ABC123xyz paste "ABC123xyz". Radio/podcast entries should use Audio File upload instead.',
+        condition: (_, siblingData) => siblingData?.type === 'video',
+      },
+      validate: (value: string | null | undefined, { siblingData }: any) => {
+        if (siblingData?.type === 'video' && (!value || value.trim().length === 0)) {
+          return 'Video entries require a YouTube Video ID.'
+        }
+        return true
+      },
+    },
+    {
+      name: 'audioFile',
+      type: 'relationship',
+      relationTo: 'audio-media',
+      label: 'Audio File',
+      admin: {
+        description:
+          'For radio programs and podcasts. Upload an audio file in the Audio Files collection first, then select it here.',
+        condition: (_, siblingData) =>
+          siblingData?.type === 'radio' || siblingData?.type === 'podcast',
+      },
+      validate: (value: any, { siblingData }: any) => {
+        const isAudioType = siblingData?.type === 'radio' || siblingData?.type === 'podcast'
+        if (isAudioType && !value) {
+          return 'Radio and podcast entries require an audio file.'
+        }
+        return true
       },
     },
     {

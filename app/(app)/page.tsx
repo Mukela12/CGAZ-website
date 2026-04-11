@@ -16,17 +16,18 @@ export default async function Home() {
   // Prefer a Media Library entry marked "Featured on Homepage" — this is the
   // new workflow the content manager uses. Fall back to the legacy
   // FeaturedDocumentary global if nothing is featured there yet.
-  const resolvedDocumentary: DocumentarySettings | null = featuredVideo
-    ? {
-        isEnabled: true,
-        title: featuredVideo.title,
-        subtitle: featuredVideo.description,
-        youtubeVideoId: featuredVideo.youtubeVideoId,
-        showControls: documentarySettings?.showControls ?? true,
-        loop: documentarySettings?.loop ?? false,
-        sectionBackground: documentarySettings?.sectionBackground ?? 'dark',
-      }
-    : documentarySettings
+  const resolvedDocumentary: DocumentarySettings | null =
+    featuredVideo && featuredVideo.youtubeVideoId
+      ? {
+          isEnabled: true,
+          title: featuredVideo.title,
+          subtitle: featuredVideo.description,
+          youtubeVideoId: featuredVideo.youtubeVideoId,
+          showControls: documentarySettings?.showControls ?? true,
+          loop: documentarySettings?.loop ?? false,
+          sectionBackground: documentarySettings?.sectionBackground ?? 'dark',
+        }
+      : documentarySettings
 
   return (
     <HomePageClient

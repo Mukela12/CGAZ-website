@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { AdaptiveLayout } from "@/components/adaptive/AdaptiveLayout";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { AudioPlayerProvider } from "@/components/audio/AudioPlayerContext";
+import { StickyAudioPlayer } from "@/components/audio/StickyAudioPlayer";
 import "../globals.css";
 
 const inter = Inter({
@@ -77,7 +79,10 @@ export default function AppLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className={`${inter.className} antialiased bg-neutral-50 text-neutral-900`}>
         <ToastProvider />
-        <AdaptiveLayout>{children}</AdaptiveLayout>
+        <AudioPlayerProvider>
+          <AdaptiveLayout>{children}</AdaptiveLayout>
+          <StickyAudioPlayer />
+        </AudioPlayerProvider>
       </body>
     </html>
   );

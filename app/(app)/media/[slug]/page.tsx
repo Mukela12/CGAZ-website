@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   getMediaLibraryEntries,
   getMediaLibraryEntryBySlug,
+  resolveAudioFile,
 } from "@/lib/payload/api";
 import { Footer } from "@/components/shared/Footer";
 import { GlassCard } from "@/components/shared/GlassCard";
@@ -125,8 +126,21 @@ export default async function MediaEntryPage({
             )}
           </div>
 
-          {/* Video Player */}
-          <MediaPlayer videoId={entry.youtubeVideoId} title={entry.title} />
+          {/* Player (video or audio) */}
+          <MediaPlayer
+            entryId={entry.id}
+            title={entry.title}
+            subtitle={entry.location || languageLabels[entry.language] || undefined}
+            youtubeVideoId={entry.youtubeVideoId}
+            audio={
+              (() => {
+                const a = resolveAudioFile(entry);
+                return a
+                  ? { src: a.cloudinaryUrl, durationHint: a.duration || undefined }
+                  : null;
+              })()
+            }
+          />
 
           {/* Description */}
           <div className="mt-8 prose prose-lg max-w-none">
@@ -135,19 +149,21 @@ export default async function MediaEntryPage({
             </p>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-neutral-200">
-            <a
-              href={`https://www.youtube.com/watch?v=${entry.youtubeVideoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-cashew-green transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-              </svg>
-              Watch on YouTube
-            </a>
-          </div>
+          {entry.youtubeVideoId && (
+            <div className="mt-8 pt-8 border-t border-neutral-200">
+              <a
+                href={`https://www.youtube.com/watch?v=${entry.youtubeVideoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-cashew-green transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+                Watch on YouTube
+              </a>
+            </div>
+          )}
         </div>
       </article>
 
@@ -160,20 +176,28 @@ export default async function MediaEntryPage({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {related.map((r) => {
-                const thumb = `https://img.youtube.com/vi/${r.youtubeVideoId}/hqdefault.jpg`;
+                const thumb = r.youtubeVideoId
+                  ? `https://img.youtube.com/vi/${r.youtubeVideoId}/hqdefault.jpg`
+                  : null;
                 return (
                   <Link key={r.id} href={`/media/${r.slug}`}>
                     <GlassCard
                       hoverable
                       className="h-full bg-white border border-neutral-200 hover:border-cashew-green transition-all duration-300 overflow-hidden"
                     >
-                      <div className="aspect-video bg-neutral-900 relative">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={thumb}
-                          alt={r.title}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="aspect-video bg-gradient-to-br from-neutral-800 to-neutral-900 relative">
+                        {thumb ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={thumb}
+                            alt={r.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-cashew-green/30 to-zambia-copper/20 flex items-center justify-center">
+                            <Radio className="w-16 h-16 text-white/40" />
+                          </div>
+                        )}
                         <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                           <div className="w-12 h-12 rounded-full bg-cashew-green/90 flex items-center justify-center">
                             <Play className="w-5 h-5 text-white ml-0.5" fill="currentColor" />
