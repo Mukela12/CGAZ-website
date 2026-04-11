@@ -75,7 +75,7 @@ export const AudioMedia: CollectionConfig = {
       label: 'Audio File Upload',
       admin: {
         components: {
-          Field: '/payload/components/AudioUploadField#default',
+          Field: '/payload/components/AudioUploadField',
         },
       },
     },
