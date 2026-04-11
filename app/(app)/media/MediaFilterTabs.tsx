@@ -16,7 +16,7 @@ interface MediaFilterTabsProps {
 
 export function MediaFilterTabs({ tabs, selectedType }: MediaFilterTabsProps) {
   return (
-    <section className="sticky top-20 lg:top-[140px] z-30 bg-white/95 backdrop-blur-md border-b border-neutral-200">
+    <section className="sticky top-16 lg:top-20 z-30 bg-white border-b border-neutral-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 py-4 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {
