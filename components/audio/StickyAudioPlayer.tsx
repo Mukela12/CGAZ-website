@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Pause, Play, X, Radio } from "lucide-react";
 import { useAudioPlayer } from "./AudioPlayerContext";
 
@@ -13,6 +14,18 @@ import { useAudioPlayer } from "./AudioPlayerContext";
 export function StickyAudioPlayer() {
   const { currentTrack, isPlaying, currentTime, duration, togglePlayPause, seek, close } =
     useAudioPlayer();
+
+  // Reserve space at the bottom of the page while the player is visible so
+  // content (e.g. the last row of media cards) isn't hidden behind it.
+  // 132px ≈ the player's own height (~108px) + a small breathing gap.
+  useEffect(() => {
+    if (!currentTrack) return;
+    const prev = document.body.style.paddingBottom;
+    document.body.style.paddingBottom = "132px";
+    return () => {
+      document.body.style.paddingBottom = prev;
+    };
+  }, [currentTrack]);
 
   if (!currentTrack) return null;
 
@@ -34,7 +47,7 @@ export function StickyAudioPlayer() {
 
   return (
     <div
-      className="fixed z-40 left-0 right-0 bottom-16 lg:left-auto lg:right-6 lg:bottom-6 lg:w-[380px] px-4 lg:px-0"
+      className="fixed z-50 left-0 right-0 bottom-4 lg:left-auto lg:right-6 lg:bottom-6 lg:w-[380px] px-4 lg:px-0"
       role="region"
       aria-label="Audio player"
     >
