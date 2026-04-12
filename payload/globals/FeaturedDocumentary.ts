@@ -28,6 +28,60 @@ export const FeaturedDocumentary: GlobalConfig = {
         return data
       },
     ],
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        // When the featured video changes, auto-add the OLD video to the
+        // Media Library so it's still visible on the /media page.
+        const oldId = previousDoc?.youtubeVideoId
+        const newId = doc?.youtubeVideoId
+        if (!oldId || oldId === newId) return
+
+        try {
+          // Check if the old video already exists in Media Library
+          const { docs } = await req.payload.find({
+            collection: 'media-library',
+            where: { youtubeVideoId: { equals: oldId } },
+            limit: 1,
+            depth: 0,
+          })
+
+          if (docs.length === 0) {
+            // Create a new Media Library entry for the old featured video
+            const oldTitle = previousDoc?.title || 'Previous Featured Documentary'
+            const slug = oldTitle
+              .toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9\s-]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .replace(/^-|-$/g, '')
+
+            await req.payload.create({
+              collection: 'media-library',
+              data: {
+                title: oldTitle,
+                slug,
+                type: 'video',
+                description: previousDoc?.subtitle || oldTitle,
+                youtubeVideoId: oldId,
+                language: 'english',
+                publishedDate: new Date().toISOString(),
+                isFeatured: false,
+                status: 'published',
+              },
+            })
+            req.payload.logger?.info(
+              `Auto-archived previous featured documentary "${oldTitle}" (${oldId}) to Media Library`,
+            )
+          }
+        } catch (err) {
+          req.payload.logger?.error(
+            { err },
+            'Failed to auto-archive previous featured documentary to Media Library',
+          )
+        }
+      },
+    ],
   },
 
   fields: [
@@ -43,7 +97,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               label: 'Display Documentary on Homepage',
               defaultValue: false,
               admin: {
-                description: 'Toggle to show/hide the documentary section on the homepage',
+                description: 'Toggle to show/hide the documentary section on the homepage.',
               },
             },
             {
@@ -52,7 +106,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               label: 'Section Title',
               defaultValue: 'Our Story',
               admin: {
-                description: 'Title displayed above the video (e.g., "Our Story", "Documentary")',
+                description: 'Heading shown above the video on the homepage (e.g. "Our Story").',
               },
             },
             {
@@ -61,15 +115,16 @@ export const FeaturedDocumentary: GlobalConfig = {
               label: 'Section Subtitle',
               defaultValue: 'Watch our documentary to learn about CGAZ\'s mission to empower cashew farmers across Zambia.',
               admin: {
-                description: 'Description text displayed below the title',
+                description: 'Short description shown below the heading.',
               },
             },
             {
               name: 'youtubeVideoId',
               type: 'text',
-              label: 'YouTube Video ID',
+              label: 'YouTube Video ID or Link',
               admin: {
-                description: 'Paste the YouTube link or just the video ID — both work. e.g. "https://youtu.be/O4QVdR-od9c" or just "O4QVdR-od9c".',
+                description:
+                  'Paste the full YouTube link or just the ID — both work. When you change the video here, the previous video is automatically saved to the Media Library so it stays visible on the /media page.',
               },
             },
             {
@@ -78,7 +133,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               label: 'Generated Embed URL',
               admin: {
                 readOnly: true,
-                description: 'Auto-generated embed URL (for reference only)',
+                description: 'Auto-generated — do not edit.',
               },
               hooks: {
                 beforeChange: [

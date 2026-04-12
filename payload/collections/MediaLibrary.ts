@@ -23,7 +23,7 @@ export const MediaLibrary: CollectionConfig = {
     group: 'Content',
     defaultColumns: ['title', 'type', 'language', 'publishedDate', 'isFeatured', 'status'],
     description:
-      'Videos and radio programs. Videos use a YouTube video ID. Radio programs and podcasts upload audio files directly.',
+      'All media content for the /media page. For videos: paste a YouTube link. For radio/podcasts: upload an audio file. Check "Feature on Homepage" to display a video in the homepage documentary section.',
   },
   access: {
     read: ({ req }) => {
@@ -113,15 +113,52 @@ export const MediaLibrary: CollectionConfig = {
     ],
   },
   fields: [
+    // ── Row 1: Type + Status side-by-side (pick these first) ──
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'type',
+          type: 'select',
+          required: true,
+          defaultValue: 'video',
+          options: [
+            { label: 'Video (YouTube)', value: 'video' },
+            { label: 'Radio Program', value: 'radio' },
+            { label: 'Podcast', value: 'podcast' },
+          ],
+          admin: {
+            width: '50%',
+            description: 'Choose "Video" for YouTube content, or "Radio/Podcast" for audio uploads.',
+          },
+        },
+        {
+          name: 'status',
+          type: 'select',
+          required: true,
+          defaultValue: 'published',
+          options: [
+            { label: 'Published (visible on site)', value: 'published' },
+            { label: 'Draft (hidden from site)', value: 'draft' },
+          ],
+          admin: {
+            width: '50%',
+            description: 'Set to Published when ready for the public to see.',
+          },
+        },
+      ],
+    },
+    // ── Title ──
     {
       name: 'title',
       type: 'text',
       required: true,
       label: 'Title',
       admin: {
-        description: 'e.g. "Cashew Farming in Senanga" or "CGAZ/GIZ Radio Program"',
+        description: 'The name shown on the website, e.g. "Cashew Farming in Senanga".',
       },
     },
+    // ── Slug (auto-generated, hidden from admin) ──
     {
       name: 'slug',
       type: 'text',
@@ -129,50 +166,38 @@ export const MediaLibrary: CollectionConfig = {
       unique: true,
       label: 'URL Slug',
       admin: {
-        description:
-          'Auto-generated from title. Leave blank — it will be created for you (e.g. "cashew-senanga").',
+        position: 'sidebar',
+        description: 'Auto-generated from title. Only edit if you need a custom URL.',
       },
     },
-    {
-      name: 'type',
-      type: 'select',
-      required: true,
-      defaultValue: 'video',
-      options: [
-        { label: 'Video (Documentary / News)', value: 'video' },
-        { label: 'Radio Program', value: 'radio' },
-        { label: 'Podcast', value: 'podcast' },
-      ],
-      admin: {
-        description:
-          'Used to filter the media page. Videos use YouTube; radio and podcasts upload audio files directly.',
-      },
-    },
+    // ── Description ──
     {
       name: 'description',
       type: 'textarea',
       required: true,
       label: 'Description',
       admin: {
-        description: 'A short paragraph explaining what this is about (2–4 sentences).',
+        description: 'A short summary (2–4 sentences) shown on the media card and detail page.',
       },
     },
+    // ── YouTube field (only for video type) ──
     {
       name: 'youtubeVideoId',
       type: 'text',
-      label: 'YouTube Video ID',
+      label: 'YouTube Link or Video ID',
       admin: {
         description:
-          'Paste the YouTube link or just the video ID — both work. e.g. "https://youtu.be/O4QVdR-od9c" or just "O4QVdR-od9c". The system will extract the ID automatically.',
+          'Paste the full YouTube link (e.g. https://youtu.be/O4QVdR-od9c) or just the video ID. The system extracts the ID automatically. Make sure the video is set to Public or Unlisted on YouTube — Private videos will not play.',
         condition: (_, siblingData) => siblingData?.type === 'video',
       },
       validate: (value: string | null | undefined, { siblingData }: any) => {
         if (siblingData?.type === 'video' && (!value || value.trim().length === 0)) {
-          return 'Video entries require a YouTube Video ID.'
+          return 'Video entries require a YouTube link or video ID.'
         }
         return true
       },
     },
+    // ── Audio file (only for radio/podcast type) ──
     {
       name: 'audioFile',
       type: 'relationship',
@@ -180,7 +205,7 @@ export const MediaLibrary: CollectionConfig = {
       label: 'Audio File',
       admin: {
         description:
-          'For radio programs and podcasts. Upload an audio file in the Audio Files collection first, then select it here.',
+          'Select an audio file. If you haven\'t uploaded one yet, go to "Audio Media" in the sidebar first, upload the file there, then come back and select it.',
         condition: (_, siblingData) =>
           siblingData?.type === 'radio' || siblingData?.type === 'podcast',
       },
@@ -192,6 +217,68 @@ export const MediaLibrary: CollectionConfig = {
         return true
       },
     },
+    // ── Row 2: Language + Location side-by-side ──
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'language',
+          type: 'select',
+          required: true,
+          defaultValue: 'english',
+          options: [
+            { label: 'English', value: 'english' },
+            { label: 'Lozi', value: 'lozi' },
+            { label: 'Bemba', value: 'bemba' },
+            { label: 'Nyanja', value: 'nyanja' },
+            { label: 'Tonga', value: 'tonga' },
+            { label: 'Mixed', value: 'mixed' },
+          ],
+          admin: {
+            width: '50%',
+          },
+        },
+        {
+          name: 'location',
+          type: 'text',
+          label: 'Location',
+          admin: {
+            width: '50%',
+            description: 'e.g. "Senanga", "Mongu", "Limulunga District"',
+          },
+        },
+      ],
+    },
+    // ── Row 3: Date + Duration side-by-side ──
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'publishedDate',
+          type: 'date',
+          required: true,
+          label: 'Published Date',
+          defaultValue: () => new Date(),
+          admin: {
+            width: '50%',
+            date: {
+              pickerAppearance: 'dayOnly',
+            },
+            description: 'When this was originally released.',
+          },
+        },
+        {
+          name: 'duration',
+          type: 'text',
+          label: 'Duration',
+          admin: {
+            width: '50%',
+            description: 'e.g. "6:45" or "18 minutes"',
+          },
+        },
+      ],
+    },
+    // ── Thumbnail ──
     {
       name: 'customThumbnail',
       type: 'upload',
@@ -199,52 +286,10 @@ export const MediaLibrary: CollectionConfig = {
       label: 'Custom Thumbnail (optional)',
       admin: {
         description:
-          'Leave blank to auto-pull the YouTube thumbnail. Only upload a custom image if the YouTube one is low quality.',
+          'For videos, a YouTube thumbnail is used automatically. Only upload here if you want a different image.',
       },
     },
-    {
-      name: 'language',
-      type: 'select',
-      required: true,
-      defaultValue: 'english',
-      options: [
-        { label: 'English', value: 'english' },
-        { label: 'Lozi', value: 'lozi' },
-        { label: 'Bemba', value: 'bemba' },
-        { label: 'Nyanja', value: 'nyanja' },
-        { label: 'Tonga', value: 'tonga' },
-        { label: 'Mixed', value: 'mixed' },
-      ],
-    },
-    {
-      name: 'location',
-      type: 'text',
-      label: 'Location',
-      admin: {
-        description: 'Optional. e.g. "Senanga", "Mongu", "Limulunga District"',
-      },
-    },
-    {
-      name: 'publishedDate',
-      type: 'date',
-      required: true,
-      label: 'Published Date',
-      defaultValue: () => new Date(),
-      admin: {
-        date: {
-          pickerAppearance: 'dayOnly',
-        },
-        description: 'The date this video/program was originally released.',
-      },
-    },
-    {
-      name: 'duration',
-      type: 'text',
-      label: 'Duration',
-      admin: {
-        description: 'Optional. Free text, e.g. "12:34" or "23 minutes"',
-      },
-    },
+    // ── Featured checkbox ──
     {
       name: 'isFeatured',
       type: 'checkbox',
@@ -252,20 +297,8 @@ export const MediaLibrary: CollectionConfig = {
       label: 'Feature on Homepage',
       admin: {
         description:
-          'Only ONE entry per type can be featured at a time. Ticking this will automatically un-feature whatever is currently featured. Videos appear in the homepage documentary section.',
-      },
-    },
-    {
-      name: 'status',
-      type: 'select',
-      required: true,
-      defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
-      admin: {
-        description: 'Drafts are hidden from the public website.',
+          'Check this to display the video in the homepage documentary section. Only one video can be featured at a time — checking this will automatically un-feature the current one.',
+        condition: (_, siblingData) => siblingData?.type === 'video',
       },
     },
   ],
