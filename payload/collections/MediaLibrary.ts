@@ -37,6 +37,36 @@ export const MediaLibrary: CollectionConfig = {
     },
   },
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+
+        // Auto-generate slug from title if slug is empty or looks unformatted
+        if (data.title && (!data.slug || data.slug === data.title || /\s/.test(data.slug))) {
+          data.slug = data.title
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')
+        }
+
+        // Auto-extract YouTube video ID from full URLs
+        if (data.youtubeVideoId) {
+          const raw = data.youtubeVideoId.trim()
+          // Match youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID
+          const match = raw.match(
+            /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/,
+          )
+          if (match) {
+            data.youtubeVideoId = match[1]
+          }
+        }
+
+        return data
+      },
+    ],
     beforeChange: [
       async ({ data, req, operation, originalDoc }) => {
         // When an entry is being marked featured, un-feature every other entry
@@ -100,7 +130,7 @@ export const MediaLibrary: CollectionConfig = {
       label: 'URL Slug',
       admin: {
         description:
-          'Lowercase, words separated by dashes. This becomes the page URL: /media/your-slug',
+          'Auto-generated from title. Leave blank — it will be created for you (e.g. "cashew-senanga").',
       },
     },
     {
@@ -133,7 +163,7 @@ export const MediaLibrary: CollectionConfig = {
       label: 'YouTube Video ID',
       admin: {
         description:
-          'Required for Video entries. Paste only the ID, not the full URL. From https://youtu.be/ABC123xyz paste "ABC123xyz". Radio/podcast entries should use Audio File upload instead.',
+          'Paste the YouTube link or just the video ID — both work. e.g. "https://youtu.be/O4QVdR-od9c" or just "O4QVdR-od9c". The system will extract the ID automatically.',
         condition: (_, siblingData) => siblingData?.type === 'video',
       },
       validate: (value: string | null | undefined, { siblingData }: any) => {
