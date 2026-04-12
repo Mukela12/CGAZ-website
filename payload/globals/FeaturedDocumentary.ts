@@ -11,6 +11,25 @@ export const FeaturedDocumentary: GlobalConfig = {
     update: ({ req: { user } }) => !!user,
   },
 
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+        // Auto-extract YouTube video ID from full URLs
+        if (data.youtubeVideoId) {
+          const raw = data.youtubeVideoId.trim()
+          const match = raw.match(
+            /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/,
+          )
+          if (match) {
+            data.youtubeVideoId = match[1]
+          }
+        }
+        return data
+      },
+    ],
+  },
+
   fields: [
     {
       type: 'tabs',
@@ -50,7 +69,7 @@ export const FeaturedDocumentary: GlobalConfig = {
               type: 'text',
               label: 'YouTube Video ID',
               admin: {
-                description: 'Enter the YouTube video ID (e.g., dQw4w9WgXcQ). Find it in the YouTube URL after "v=" or "youtu.be/"',
+                description: 'Paste the YouTube link or just the video ID — both work. e.g. "https://youtu.be/O4QVdR-od9c" or just "O4QVdR-od9c".',
               },
             },
             {
